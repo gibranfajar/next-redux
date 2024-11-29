@@ -110,9 +110,9 @@ export default function Page() {
                 <span className="text-[8px] text-white">TIER ANDA</span>
               </div>
               <div className="absolute inset-0 flex items-end justify-between z-10 p-6">
-                <div
+                <Link
+                  href="/history-tier"
                   className="bg-white/50 flex px-2 rounded py-1 gap-1 cursor-pointer"
-                  onClick={() => {}}
                 >
                   <Image
                     src="/images/graf-up.svg"
@@ -122,7 +122,7 @@ export default function Page() {
                     className="logo shadow"
                   />
                   <span className="text-[8px]">RIWAYAT TIER</span>
-                </div>
+                </Link>
                 <div
                   className="bg-white/50 flex px-2 rounded py-1 gap-1 cursor-pointer"
                   onClick={handlePopUpQr}
@@ -151,7 +151,7 @@ export default function Page() {
               Poin untuk tier selanjutnya
             </small>
             <small className="text-white">
-              {user.memberInfoData.tierInfo.memberPersentase}%
+              {user.memberInfoData.tierInfo.memberPersentase || 0}%
             </small>
           </div>
 

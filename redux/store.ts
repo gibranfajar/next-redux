@@ -6,6 +6,8 @@ import storeReducer from "./slices/storeSlice";
 import brandReducer from "./slices/brandSlice";
 import transactionReducer from "./slices/transaction";
 import tierReducer from "./slices/tierSlice";
+import pointReducer from "./slices/pointSlice";
+import historyTierReducer from "./slices/historyTierSlice";
 
 const store = configureStore({
   reducer: {
@@ -16,6 +18,8 @@ const store = configureStore({
     store: storeReducer,
     transaction: transactionReducer,
     tier: tierReducer,
+    point: pointReducer,
+    tierHistory: historyTierReducer,
   },
   devTools: process.env.NEXT_PUBLIC_NODE_ENV !== "production",
 });

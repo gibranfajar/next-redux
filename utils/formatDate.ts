@@ -15,14 +15,27 @@ const formatDate = (tanggal: string) => {
     "Desember",
   ];
 
-  // Mengonversi string tanggal (DD/MM/YYYY) menjadi objek Date
-  const [day, month, year] = tanggal.split("/");
-  const date = new Date(`${year}-${month}-${day}`);
+  let day: number, month: number, year: number;
+
+  if (tanggal.includes("/")) {
+    // Format dd/mm/yyyy
+    const [d, m, y] = tanggal.split("/");
+    day = parseInt(d, 10);
+    month = parseInt(m, 10) - 1; // Bulan dalam JavaScript dimulai dari 0
+    year = parseInt(y, 10);
+  } else {
+    // Format yyyy-mm-dd
+    const [y, m, d] = tanggal.split("-");
+    day = parseInt(d, 10);
+    month = parseInt(m, 10) - 1; // Bulan dalam JavaScript dimulai dari 0
+    year = parseInt(y, 10);
+  }
 
   // Mendapatkan nama bulan dari array bulanIndo
-  const bulan = bulanIndo[date.getMonth()];
+  const bulan = bulanIndo[month];
 
   // Mengembalikan format tanggal "1 Januari 2025"
-  return `${parseInt(day, 10)} ${bulan} ${year}`;
+  return `${day} ${bulan} ${year}`;
 };
+
 export default formatDate;
