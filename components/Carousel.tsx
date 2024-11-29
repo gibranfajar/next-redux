@@ -12,6 +12,16 @@ import { useAppDispatch } from "@/redux/hooks";
 import { getPromo } from "@/redux/thunks/promoThunks";
 import { RootState } from "@/redux/store";
 
+type Promo = {
+  id: number;
+  imageTitle: string;
+  imageSubTitle: string;
+  imageUrl: string;
+  promoTitle: string;
+  promoDetail: string;
+  promoEndDate: string;
+};
+
 const Carousel: React.FC = () => {
   const dispatch = useAppDispatch();
   const { data } = useSelector((state: RootState) => state.promo);
@@ -33,7 +43,7 @@ const Carousel: React.FC = () => {
         modules={[Autoplay, Pagination]}
       >
         {data &&
-          data.promoData.map((item: any) => (
+          data.promoData.map((item: Promo) => (
             <SwiperSlide key={item.id}>
               <Image
                 src={`https://web.amscorp.id:3060/imagestorage/promo/${item.imageUrl}`}
