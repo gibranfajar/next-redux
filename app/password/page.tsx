@@ -6,7 +6,7 @@ import Input from "@/components/Input";
 import SuccessMessage from "@/components/SuccessMessage";
 import axios from "axios";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // interface for password
 interface Password {
@@ -28,6 +28,7 @@ interface Pin {
 }
 
 export default function Profile() {
+  const [member, setMember] = useState<string | null>(null);
   const [errorMessagePassword, setErrorMessagePassword] =
     useState<boolean>(false);
   const [successMessagePassword, setSuccessMessagePassword] =
@@ -35,9 +36,15 @@ export default function Profile() {
   const [errorMessagePin, setErrorMessagePin] = useState<boolean>(false);
   const [successMessagePin, setSuccessMessagePin] = useState<boolean>(false);
 
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setMember(localStorage.getItem("member"));
+    }
+  }, []);
+
   // state for password
   const [password, setPassword] = useState<Password>({
-    memberID: localStorage.getItem("member") || "",
+    memberID: member || "",
     currentPassword: "",
     password: "",
     confirmPassword: "",
@@ -50,7 +57,7 @@ export default function Profile() {
 
   // state for pin
   const [pin, setPin] = useState<Pin>({
-    memberID: localStorage.getItem("member") || "",
+    memberID: member || "",
     pin: "",
     confirmPin: "",
     loading: false,
