@@ -1,5 +1,0 @@
-dependency yang sudah di download : 
-
-- react-redux
-- axios
-- dotenv

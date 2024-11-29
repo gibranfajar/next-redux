@@ -10,7 +10,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
+      <head>
+        <title>AMS Membership</title>
+      </head>
+      <body className="bg-slate-100">
         <Provider store={store}>{children}</Provider>
       </body>
     </html>

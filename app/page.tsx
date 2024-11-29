@@ -1,76 +1,51 @@
 "use client";
 
-import { RootState } from "@/redux/store";
-import { loginUser } from "@/redux/thunks/authThunks";
+import AllBrands from "@/components/AllBrands";
+import Button from "@/components/Button";
+import LogoHeader from "@/components/LogoHeader";
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
-import { useAppDispatch } from "@/redux/hooks";
+import React from "react";
 
-export default function Home() {
+export default function Auth() {
+  // router untuk redirect
   const router = useRouter();
-  const dispatch = useAppDispatch();
-  const { loading, error, user } = useSelector(
-    (state: RootState) => state.auth
-  );
 
-  const [data, setData] = useState<{ user: string; password: string }>({
-    user: "",
-    password: "",
-  });
-
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setData({
-      ...data,
-      [event.target.name]: event.target.value,
-    });
+  // handle masuk untuk redirect ke halaman login
+  const handleMasuk = () => {
+    router.push("/login");
   };
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    await dispatch(loginUser(data));
+  // handle daftar untuk redirect ke halaman register
+  const handleDaftar = () => {
+    router.push("/register");
   };
-
-  useEffect(() => {
-    if (user?.responseCode == 2002500) {
-      localStorage.setItem("memberID", user.loginData.memberID);
-      router.push("/home");
-    }
-  }, [user, router]);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4">
-      <form
-        onSubmit={handleSubmit}
-        className="flex flex-col gap-4 w-full max-w-sm"
-      >
-        <input
-          type="text"
-          name="user"
-          value={data.user}
-          onChange={handleChange}
-          placeholder="Enter your user"
-          className="border p-2"
-        />
-        <input
-          type="password"
-          name="password"
-          value={data.password}
-          onChange={handleChange}
-          placeholder="Enter your password"
-          className="border p-2"
-        />
-        <button
-          type="submit"
-          disabled={loading}
-          className={`p-2 ${
-            loading ? "bg-gray-400" : "bg-blue-500 text-white"
-          }`}
-        >
-          {loading ? "Loading..." : "Submit"}
-        </button>
-      </form>
-      {error && <p className="text-red-500 mt-2">{error}</p>}
+    <div className="flex justify-center items-center">
+      <div className="flex flex-col items-center max-w-md w-full min-h-screen bg-white md:rounded-lg">
+        <LogoHeader className="m-20" />
+
+        <div className="flex flex-col justify-center items-center m-8">
+          <h2 className="text-lg font-bold">Masuk Akun</h2>
+          <p className="text-xs text-center my-6">
+            Kumpulkan point, dapatkan promo dan penawaran khusus member
+          </p>
+          <div className="flex flex-col w-full gap-6 justify-center items-center">
+            <Button
+              label="MASUK"
+              className="bg-base-accent text-white rounded-full w-full p-2"
+              onClick={handleMasuk}
+            />
+            <Button
+              label="DAFTAR MEMBER"
+              className="bg-base-accent text-white rounded-full w-full p-2"
+              onClick={handleDaftar}
+            />
+          </div>
+
+          <AllBrands />
+        </div>
+      </div>
     </div>
   );
 }
