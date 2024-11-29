@@ -6,7 +6,7 @@ import Input from "@/components/Input";
 import SuccessMessage from "@/components/SuccessMessage";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface Password {
   phoneNumber: string;
@@ -18,7 +18,13 @@ interface Password {
 
 export default function ResetPassword() {
   const router = useRouter();
-  const getPhone = sessionStorage.getItem("phone");
+  const [getPhone, setGetPhone] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setGetPhone(sessionStorage.getItem("phone"));
+    }
+  }, []);
 
   const [errorMessagePassword, setErrorMessagePassword] =
     useState<boolean>(false);
