@@ -69,7 +69,7 @@ export default function Profile() {
 
   useEffect(() => {
     dispatch(getUserData());
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     if (userData) {

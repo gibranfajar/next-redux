@@ -14,9 +14,7 @@ interface Brand {
 
 export default function Brand() {
   const dispatch = useAppDispatch();
-  const { loading, error, data } = useSelector(
-    (state: RootState) => state.brand
-  );
+  const { data } = useSelector((state: RootState) => state.brand);
 
   useEffect(() => {
     dispatch(getBrand());

@@ -14,9 +14,7 @@ import { RootState } from "@/redux/store";
 
 const Carousel: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { loading, error, data } = useSelector(
-    (state: RootState) => state.promo
-  );
+  const { data } = useSelector((state: RootState) => state.promo);
 
   useEffect(() => {
     dispatch(getPromo());
