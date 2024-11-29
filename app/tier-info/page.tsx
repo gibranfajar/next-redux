@@ -34,9 +34,7 @@ export default function TierInfo() {
   const dispatch = useAppDispatch();
   const [selectedTier, setSelectedTier] = useState<Tier | null>(null);
 
-  const { loading, error, data } = useSelector(
-    (state: RootState) => state.tier
-  );
+  const { error, data } = useSelector((state: RootState) => state.tier);
 
   useEffect(() => {
     dispatch(getTier());
@@ -62,7 +60,7 @@ export default function TierInfo() {
     setSelectedTier(selected || null);
   };
 
-  if (data == null || loading) {
+  if (data == null) {
     return (
       <div className="flex flex-col gap-4 justify-center items-center h-screen">
         <Image src="/images/logo.svg" width={150} height={150} alt="logo" />

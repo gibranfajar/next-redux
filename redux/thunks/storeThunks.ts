@@ -9,7 +9,9 @@ export const getStore = createAsyncThunk(
       if (!member) {
         return rejectWithValue("Member ID tidak ditemukan");
       }
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}location/list?memberID=${member}`);
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}location/list?memberID=${member}`
+      );
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || "Terjadi kesalahan");

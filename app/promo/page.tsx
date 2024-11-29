@@ -24,9 +24,7 @@ export default function Promo() {
   const dispatch = useAppDispatch();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [detail, setDetail] = useState<Promo | null>(null);
-  const { loading, error, data } = useSelector(
-    (state: RootState) => state.promo
-  );
+  const { error, data } = useSelector((state: RootState) => state.promo);
 
   useEffect(() => {
     dispatch(getPromo());
@@ -46,7 +44,7 @@ export default function Promo() {
     setIsModalVisible(false);
   };
 
-  if (data == null || loading) {
+  if (data == null) {
     return (
       <div className="flex flex-col gap-4 justify-center items-center h-screen">
         <Image src="/images/logo.svg" width={150} height={150} alt="logo" />

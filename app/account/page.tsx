@@ -26,9 +26,7 @@ export default function Page() {
   const [errorMessage, setErrorMessage] = useState(false);
 
   // Mengambil data dari slice `users`
-  const { loading, error, user } = useSelector(
-    (state: RootState) => state.users
-  );
+  const { error, user } = useSelector((state: RootState) => state.users);
 
   // Memuat data user saat komponen dirender
   useEffect(() => {
@@ -68,7 +66,7 @@ export default function Page() {
     router.push("/");
   };
 
-  if (user == null || loading) {
+  if (user == null) {
     return (
       <div className="flex flex-col gap-4 justify-center items-center h-screen">
         <Image src="/images/logo.svg" width={150} height={150} alt="logo" />

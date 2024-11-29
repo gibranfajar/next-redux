@@ -21,9 +21,7 @@ interface Point {
 
 export default function HistoryPoint() {
   const dispatch = useAppDispatch();
-  const { loading, error, data } = useSelector(
-    (state: RootState) => state.point
-  );
+  const { error, data } = useSelector((state: RootState) => state.point);
 
   console.log(data);
 
@@ -31,7 +29,7 @@ export default function HistoryPoint() {
     dispatch(getPoint());
   }, [dispatch]);
 
-  if (data == null || loading) {
+  if (data == null) {
     return (
       <div className="flex flex-col gap-4 justify-center items-center h-screen">
         <Image src="/images/logo.svg" width={150} height={150} alt="logo" />

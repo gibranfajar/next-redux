@@ -63,9 +63,7 @@ export default function Profile() {
     dateofBirth: "",
   });
 
-  const { loading, error, userData } = useSelector(
-    (state: RootState) => state.userData
-  );
+  const { error, userData } = useSelector((state: RootState) => state.userData);
 
   useEffect(() => {
     dispatch(getUserData());
@@ -164,7 +162,7 @@ export default function Profile() {
     }
   };
 
-  if (userData == null || loading) {
+  if (userData == null) {
     return (
       <div className="flex flex-col gap-4 justify-center items-center h-screen">
         <Image src="/images/logo.svg" width={150} height={150} alt="logo" />

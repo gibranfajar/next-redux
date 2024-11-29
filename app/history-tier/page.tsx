@@ -19,17 +19,13 @@ interface Tier {
 
 export default function HistoryTier() {
   const dispatch = useAppDispatch();
-  const { loading, error, data } = useSelector(
-    (state: RootState) => state.tierHistory
-  );
-
-  console.log(data);
+  const { error, data } = useSelector((state: RootState) => state.tierHistory);
 
   useEffect(() => {
     dispatch(getHistoryTier());
   }, [dispatch]);
 
-  if (data == null || loading) {
+  if (data == null) {
     return (
       <div className="flex flex-col gap-4 justify-center items-center h-screen">
         <Image src="/images/logo.svg" width={150} height={150} alt="logo" />

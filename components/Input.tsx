@@ -2,10 +2,19 @@ import React from "react";
 
 type InputProps = {
   label?: string;
-  type?: "text" | "number" | "email" | "password" | "date" | "tel" | undefined;
+  type?:
+    | "text"
+    | "number"
+    | "email"
+    | "password"
+    | "date"
+    | "tel"
+    | "checkbox"
+    | undefined;
   name?: string;
   value: string;
   ref?: string;
+  placeholder?: string;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   className?: string;
   error?: string;
@@ -17,6 +26,7 @@ export default function Input({
   name,
   value,
   ref,
+  placeholder,
   onChange,
   className,
   error,
@@ -28,6 +38,7 @@ export default function Input({
         ref={ref}
         type={type}
         name={name}
+        placeholder={placeholder}
         value={value}
         onChange={onChange}
         className="w-full px-3 py-2 text-sm text-gray-700 placeholder-gray-500 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"

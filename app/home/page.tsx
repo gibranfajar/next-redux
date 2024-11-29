@@ -23,9 +23,7 @@ export default function Page() {
   const [isShowQr, setIsShowQr] = useState(false);
   const [pin, setPin] = useState("");
   const [errorMessage, setErrorMessage] = useState(false);
-  const { loading, error, user } = useSelector(
-    (state: RootState) => state.users
-  );
+  const { error, user } = useSelector((state: RootState) => state.users);
 
   // Memuat data user saat komponen dirender
   useEffect(() => {
@@ -37,7 +35,7 @@ export default function Page() {
     }
   }, [dispatch, router]);
 
-  if (user == null || loading) {
+  if (user == null) {
     return (
       <div className="flex flex-col gap-4 justify-center items-center h-screen">
         <Image src="/images/logo.svg" width={150} height={150} alt="logo" />

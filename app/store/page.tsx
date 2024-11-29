@@ -1,11 +1,14 @@
 "use client";
 
+import Button from "@/components/Button";
 import Header from "@/components/Header";
+import Input from "@/components/Input";
 import { useAppDispatch } from "@/redux/hooks";
 import { RootState } from "@/redux/store";
+import { getBrand } from "@/redux/thunks/brandThunks";
 import { getStore } from "@/redux/thunks/storeThunks";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { FadeLoader } from "react-spinners";
 
@@ -18,16 +21,25 @@ type Store = {
   mapStoreUrl: string;
 };
 
+type Brand = {
+  id: number;
+  brand: string;
+};
+
 export default function Store() {
   const dispatch = useAppDispatch();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [detail, setDetail] = useState<Store | null>(null);
-  const { loading, error, data } = useSelector(
-    (state: RootState) => state.store
-  );
+  const [search, setSearch] = useState("");
+  const [filteredData, setFilteredData] = useState<Store[]>([]);
+
+  const { error, data } = useSelector((state: RootState) => state.store);
+
+  const { data: brand } = useSelector((state: RootState) => state.brand);
 
   useEffect(() => {
     dispatch(getStore());
+    dispatch(getBrand());
   }, [dispatch]);
 
   const showModal = ({ storeID }: { storeID: string }) => {
@@ -42,10 +54,51 @@ export default function Store() {
 
   const closeModal = () => setIsModalVisible(false);
 
+  // untuk modal dan fungsi search
   const [isSearchModalVisible, setIsSearchModalVisible] = useState(false);
-
+  const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);
   const showSearchModal = () => setIsSearchModalVisible(true);
   const closeSearchModal = () => setIsSearchModalVisible(false);
+
+  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setFilteredData(
+      data.storeLocationData.filter((location: Store) => {
+        const searchLower = search.toLowerCase();
+        const combinedString =
+          `${location.brand} ${location.kota}`.toLowerCase(); // Gabungkan brand dan kota
+        return combinedString.includes(searchLower); // Cek apakah pencarian cocok
+      })
+    );
+    setIsSearchModalVisible(false);
+    setSearch("");
+  };
+
+  // untuk modal dan fungsi filter
+  const showFilterModal = () => {
+    setIsFilterModalVisible(true);
+  };
+  const closeFilterModal = () => setIsFilterModalVisible(false);
+  const [filterData, setFilterData] = useState<string[]>([]);
+
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFilterData(
+      e.target.checked
+        ? [...filterData, e.target.value]
+        : filterData.filter((value) => value !== e.target.value)
+    );
+  };
+
+  const handleFilter = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setFilteredData(
+      data.storeLocationData.filter((location: Store) => {
+        return filterData.includes(location.brand);
+      })
+    );
+    setIsFilterModalVisible(false);
+    setFilterData([]);
+  };
 
   // Fungsi untuk mendekode HTML entities
   const decodeHTMLEntities = (html: string) => {
@@ -54,7 +107,7 @@ export default function Store() {
     return txt.value;
   };
 
-  if (data == null || loading) {
+  if (data == null) {
     return (
       <div className="flex flex-col gap-4 justify-center items-center h-screen">
         <Image src="/images/logo.svg" width={150} height={150} alt="logo" />
@@ -89,6 +142,7 @@ export default function Store() {
                   width={100}
                   height={100}
                   className="w-auto h-auto cursor-pointer"
+                  onClick={showFilterModal}
                 />
               </div>
             </div>
@@ -106,43 +160,51 @@ export default function Store() {
                     &#10005;
                   </button>
                 </div>
-                <div className="flex items-center justify-center mt-2 border border-gray-300 focus:outline outline-1 outline-offset-0 outline-baseaccent">
-                  <input
-                    type="text"
-                    className="w-full px-2 py-1 focus:outline outline-none text-sm"
-                  />
-                  <Image
-                    src="/images/search.svg"
-                    alt="Search"
-                    width={100}
-                    height={100}
-                    className="w-auto h-auto"
-                  />
-                </div>
+                <form onSubmit={handleSearch}>
+                  <div className="flex items-center justify-center mt-2 border border-gray-300">
+                    <input
+                      type="text"
+                      name="search"
+                      value={search}
+                      onChange={(e) => setSearch(e.target.value)}
+                      className="w-full px-2 py-1 focus:outline outline-none text-sm"
+                    />
+                    <Image
+                      src="/images/search.svg"
+                      alt="Search"
+                      width={100}
+                      height={100}
+                      className="w-auto h-auto"
+                      typeof="button"
+                    />
+                  </div>
+                </form>
               </div>
             </div>
           )}
 
           <div className="flex flex-col items-center justify-center p-4">
-            {data &&
-              data.storeLocationData.map((location: Store) => (
-                <div
-                  key={location.storeID}
-                  className="bg-white p-4 w-full rounded-lg border border-gray-300 flex items-center justify-between cursor-pointer mb-4"
-                  onClick={() => showModal({ storeID: location.storeID })}
-                >
-                  <span className="text-sm">
-                    {location.brand} {location.kota}
-                  </span>
-                  <Image
-                    src="/images/location.svg"
-                    alt="location"
-                    width={100}
-                    height={100}
-                    className="w-auto h-auto cursor-pointer"
-                  />
-                </div>
-              ))}
+            {(filteredData && filteredData.length > 0
+              ? filteredData
+              : data.storeLocationData
+            ).map((location: Store) => (
+              <div
+                key={location.storeID}
+                className="bg-white p-4 w-full rounded-lg border border-gray-300 flex items-center justify-between cursor-pointer mb-4"
+                onClick={() => showModal({ storeID: location.storeID })}
+              >
+                <span className="text-sm">
+                  {location.brand} {location.kota}
+                </span>
+                <Image
+                  src="/images/location.svg"
+                  alt="location"
+                  width={100}
+                  height={100}
+                  className="w-auto h-auto cursor-pointer"
+                />
+              </div>
+            ))}
           </div>
 
           {/* modal detail location */}
@@ -192,6 +254,45 @@ export default function Store() {
                     BUKA MAP
                   </a>
                 </div>
+              </div>
+            </div>
+          )}
+
+          {/* modal filter */}
+          {isFilterModalVisible && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center p-4 z-50">
+              <div className="bg-white w-full max-w-md shadow-lg rounded-lg">
+                <div className="flex justify-between items-center p-4">
+                  <span>Filter Brand</span>
+                  <button onClick={closeFilterModal} className="text-black">
+                    &#10005;
+                  </button>
+                </div>
+
+                <form onSubmit={handleFilter}>
+                  <div className="p-4">
+                    {brand.brandData.map((item: Brand) => (
+                      <div
+                        key={item.id}
+                        className="flex items-center justify-between mb-2"
+                      >
+                        <div className="flex items-center">
+                          <Input
+                            type="checkbox"
+                            name="brand"
+                            value={item.brand}
+                            onChange={handleCheckboxChange}
+                          />
+                          <span className="ml-2">{item.brand}</span>
+                        </div>
+                      </div>
+                    ))}
+                    <Button
+                      label="Terapkan"
+                      className="bg-base-accent text-white rounded-full w-full p-2"
+                    />
+                  </div>
+                </form>
               </div>
             </div>
           )}
