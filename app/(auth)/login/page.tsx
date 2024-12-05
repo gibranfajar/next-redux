@@ -7,7 +7,7 @@ import LogoHeader from "@/components/LogoHeader";
 import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 type UserLogin = {
   user: string;
@@ -30,6 +30,7 @@ export default function Login() {
       ...data,
       [event.target.name]: event.target.value,
     });
+    setInputError({});
   };
 
   const validateInputs = () => {
@@ -41,13 +42,6 @@ export default function Login() {
     setInputError(errors);
     return Object.keys(errors).length === 0;
   };
-
-  useEffect(() => {
-    if (Object.keys(inputError).length > 0) {
-      const timer = setTimeout(() => setInputError({}), 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [inputError]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();

@@ -1,6 +1,7 @@
 "use client";
 
 import Button from "@/components/Button";
+import ErrorMessage from "@/components/ErrorMessage";
 import LogoHeader from "@/components/LogoHeader";
 import SuccessMessage from "@/components/SuccessMessage";
 import axios from "axios";
@@ -13,6 +14,8 @@ export default function Otp() {
   const [countdown, setCountdown] = useState<number | null>(null);
   const [isWaiting, setIsWaiting] = useState(false);
   const [message, setMessage] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const inputRefs = [
     useRef<HTMLInputElement | null>(null),
@@ -51,25 +54,38 @@ export default function Otp() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const otpInput = otpValues.join("");
-    const getOtp = sessionStorage.getItem("otp");
+    setLoading(true);
 
-    // Validate the OTP
-    if (getOtp === otpInput) {
-      router.push(`/reset-password`);
-    } else {
-      console.log("Kode OTP yang Anda masukkan salah!");
+    const otpInput = otpValues.join("");
+    const getPhone = sessionStorage.getItem("phone");
+
+    try {
+      const response = await axios.post(
+        `https://golangapi-j5iu.onrender.com/send-wa-otp-verify?userAccount=${getPhone}&otp=${otpInput}`,
+        { headers: { "Content-Type": "multipart/form-data" } }
+      );
+
+      if (response.data.responseCode === "2002500") {
+        router.push(`/reset-password`);
+      } else {
+        setErrorMessage(true);
+      }
+    } catch (error) {
+      console.log("Error OTP:", error);
+    } finally {
+      setLoading(false);
+      setTimeout(() => {
+        setErrorMessage(false);
+      }, 3000);
+      setOtpValues(["", "", "", "", "", ""]);
     }
   };
 
   const handleRecodeOTP = async () => {
-    const randomNumber = Math.floor(Math.random() * 900000) + 100000;
-    sessionStorage.setItem("Otp", randomNumber.toString());
     const getPhone = sessionStorage.getItem("phone");
 
     const response = await axios.post(
-      `${process.env.NEXT_PUBLIC_API_URL}dashboard/Verify?userAccount=${getPhone}`,
-      { randomNumber }
+      `${process.env.NEXT_PUBLIC_API_URL}dashboard/Verify?userAccount=${getPhone}`
     );
 
     if (response.data.responseCode === "2002500") {
@@ -100,7 +116,12 @@ export default function Otp() {
       <div className="flex flex-col items-center w-full max-w-md bg-white md:rounded-lg min-h-screen">
         <LogoHeader className="m-20" />
 
-        {message && <SuccessMessage message="OTP Berhasil dikirim" />}
+        <div className="flex flex-col w-full px-12">
+          {message && <SuccessMessage message="OTP Berhasil dikirim" />}
+          {errorMessage && (
+            <ErrorMessage message="OTP yang anda masukkan salah" />
+          )}
+        </div>
 
         <div className="flex flex-col justify-center items-center m-8">
           <h2 className="text-lg font-bold">Masukan kode OTP</h2>
@@ -127,6 +148,7 @@ export default function Otp() {
             <Button
               label="KIRIM"
               className="bg-base-accent text-white rounded-full w-full p-2"
+              loading={loading}
             />
 
             <p className="text-center text-xs mt-4">

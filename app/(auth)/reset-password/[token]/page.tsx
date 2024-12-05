@@ -5,7 +5,7 @@ import ErrorMessage from "@/components/ErrorMessage";
 import Input from "@/components/Input";
 import SuccessMessage from "@/components/SuccessMessage";
 import axios from "axios";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 interface Password {
@@ -18,11 +18,18 @@ interface Password {
 
 export default function ResetPassword() {
   const router = useRouter();
-  const [getPhone, setGetPhone] = useState<string | null>(null);
+  const params = useParams();
+
+  const token = params.token;
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      setGetPhone(sessionStorage.getItem("phone"));
+      const phone = sessionStorage.getItem("phone");
+
+      setPassword((prevPassword) => ({
+        ...prevPassword,
+        phoneNumber: phone || "",
+      }));
     }
   }, []);
 
@@ -32,7 +39,7 @@ export default function ResetPassword() {
     useState<boolean>(false);
 
   const [password, setPassword] = useState<Password>({
-    phoneNumber: getPhone || "",
+    phoneNumber: "",
     password: "",
     confirmPassword: "",
     loading: false,
@@ -43,6 +50,11 @@ export default function ResetPassword() {
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
+
+    setPassword((prevPassword) => ({
+      ...prevPassword,
+      error: [],
+    }));
 
     setPassword((prevPassword) => {
       const updatedPassword = { ...prevPassword, [name]: value };
@@ -56,13 +68,6 @@ export default function ResetPassword() {
       return updatedPassword;
     });
   };
-
-  setTimeout(() => {
-    setPassword((prevPassword) => ({
-      ...prevPassword,
-      error: [],
-    }));
-  }, 3000);
 
   const handleSubmitPassword = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -84,15 +89,15 @@ export default function ResetPassword() {
     }
 
     try {
-      const response = await axios.put(
-        `https://golangapi-j5iu.onrender.com/api/v2.0/member/mobile/profile/auth/forgot`,
-        password,
-        { headers: { "Content-Type": "multipart/form-data" } }
+      const response = await axios.post(
+        `https://golangapi-j5iu.onrender.com/send-wa-otp-forgot-password-verify?userAccount=${password.phoneNumber}&token=${token}&password=${password.password}`
       );
 
       if (response.data.responseCode === "2002500") {
         setSuccessMessagePassword(true);
-        setTimeout(() => setSuccessMessagePassword(false), 3000);
+        setTimeout(() => {
+          router.push("/login");
+        }, 2000);
       } else if (response.data.responseCode === "4002500") {
         setErrorMessagePassword(true);
         setTimeout(() => setErrorMessagePassword(false), 3000);
@@ -109,10 +114,6 @@ export default function ResetPassword() {
         confirmPassword: "",
         loading: false,
       }));
-
-      setTimeout(() => {
-        router.push("/login");
-      }, 2000);
     }
   };
 

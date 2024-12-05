@@ -54,6 +54,7 @@ export default function Register() {
       ...formData,
       [e.target.name]: e.target.value,
     });
+    setFormError({});
   };
 
   const handleSelectChange = (
@@ -129,13 +130,6 @@ export default function Register() {
     return Object.keys(errors).length === 0;
   };
 
-  useEffect(() => {
-    if (Object.keys(formError).length > 0) {
-      const timer = setTimeout(() => setFormError({}), 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [formError]);
-
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -163,19 +157,13 @@ export default function Register() {
       );
 
       if (res.data.responseCode === "2002500") {
-        const randomNumber = Math.floor(Math.random() * 900000) + 100000;
-        sessionStorage.setItem("phone", formData.phone);
-
         const response = await axios.post(
-          `${process.env.NEXT_PUBLIC_API_URL}dashboard/Verify?userAccount=${formData.phone}`,
-          { randomNumber }
+          `${process.env.NEXT_PUBLIC_API_URL}dashboard/Verify?userAccount=${formData.phone}`
         );
 
         if (response.data.responseCode === "2002500") {
-          localStorage.setItem("member", response.data.loginData.memberID);
+          sessionStorage.setItem("phone", formData.phone);
           router.push(`/otp-register`);
-        } else {
-          console.log("Error OTP:", response.data);
         }
       } else {
         setIsError(true);
@@ -277,7 +265,7 @@ export default function Register() {
             />
             <Input
               label="*PIN"
-              type="text"
+              type="password"
               name="pin"
               value={formData.pin}
               onChange={handleInputChange}

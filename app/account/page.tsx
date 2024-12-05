@@ -146,7 +146,7 @@ export default function Page() {
             <small className="text-white">
               Rp{" "}
               {formatToIDR(user.memberInfoData.tierInfo.amountForNextTier || 0)}{" "}
-              Poin untuk tier selanjutnya
+              untuk tier selanjutnya
             </small>
             <small className="text-white">
               {user.memberInfoData.tierInfo.memberPersentase || 0}%

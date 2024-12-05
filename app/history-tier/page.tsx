@@ -89,7 +89,7 @@ export default function HistoryTier() {
                         />
                       ) : item.status == "TURUN" ? (
                         <Image
-                          src="/images/arrow-up.svg"
+                          src="/images/arrow-down.svg"
                           width={30}
                           height={30}
                           alt={item.status}

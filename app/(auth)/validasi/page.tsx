@@ -3,14 +3,14 @@
 import Button from "@/components/Button";
 import ErrorMessage from "@/components/ErrorMessage";
 import Input from "@/components/Input";
-import SuccessMessage from "@/components/SuccessMessage";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-export default function ForgotPassword() {
+export default function Validasi() {
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
-  const [success, setSuccess] = useState(false);
   const [inputError, setInputError] = useState<{ [key: string]: string }>({});
   const [data, setData] = useState({
     userAccount: "",
@@ -40,11 +40,13 @@ export default function ForgotPassword() {
 
     try {
       const response = await axios.post(
-        `https://golangapi-j5iu.onrender.com/send-wa-otp-forgot-password?userAccount=${data.userAccount}`
+        `${process.env.NEXT_PUBLIC_API_URL}dashboard/Verify?userAccount=${data.userAccount}`
       );
 
       if (response.data.responseCode === "2002500") {
-        setSuccess(true);
+        localStorage.setItem("member", response.data.loginData.memberID);
+        sessionStorage.setItem("phone", data.userAccount);
+        router.push(`/otp-validasi`);
       } else {
         setError(true);
       }
@@ -63,14 +65,11 @@ export default function ForgotPassword() {
     <div className="flex justify-center items-center">
       <div className="flex flex-col items-center w-full max-w-md bg-white md:rounded-lg min-h-screen">
         <div className="flex flex-col w-full p-8">
-          <h1 className="text-lg font-medium">Atur ulang password</h1>
-          {success && (
-            <SuccessMessage message="Link ubah password telah dikirim" />
-          )}
+          <h1 className="text-lg font-medium">Validasi Nomor</h1>
           {error && <ErrorMessage message="No telepon tidak terdaftar" />}
           <p className="text-xs my-6">
-            Masukan no telepon (Whatsapp) yang terdaftar pada akun anda dan kami
-            akan mengirimkan OTP untuk mengatur ulang password
+            Pastikan memasukan nomor yang telah terdaftar dan aktif. Kode OTP
+            akan dikirimkan ke WhatsApp anda.
           </p>
           <form action="" onSubmit={handleSendPhone}>
             <Input
@@ -84,7 +83,7 @@ export default function ForgotPassword() {
             />
 
             <Button
-              label="KIRIM PERMINTAAN"
+              label="VALIDASI"
               className="bg-base-accent text-white rounded-full w-full p-2"
               loading={loading}
             />

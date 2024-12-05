@@ -86,15 +86,14 @@ export default function Otp() {
 
     try {
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}dashboard/register/validate`,
-        data,
+        `https://golangapi-j5iu.onrender.com/send-wa-otp-verify?userAccount=${data.userAccount}&otp=${otpInput}`,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
 
       if (response.data.responseCode === "2002500") {
         setMessageSuccess(true);
         setTimeout(() => {
-          router.push(`/login`);
+          router.push(`/validasi-form`);
         }, 3000);
       } else {
         setErrorMessage(true);

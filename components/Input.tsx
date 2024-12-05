@@ -10,6 +10,7 @@ type InputProps = {
     | "date"
     | "tel"
     | "checkbox"
+    | "radio"
     | undefined;
   name?: string;
   value: string;

@@ -23,8 +23,6 @@ export default function HistoryPoint() {
   const dispatch = useAppDispatch();
   const { error, data } = useSelector((state: RootState) => state.point);
 
-  console.log(data);
-
   useEffect(() => {
     dispatch(getPoint());
   }, [dispatch]);

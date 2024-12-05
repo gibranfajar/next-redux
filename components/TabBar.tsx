@@ -5,25 +5,25 @@ import React from "react";
 export default function TabBar() {
   return (
     <div className="flex justify-between items-center px-8 py-5 bg-white fixed bottom-0 w-full border-t-2 border-t-slate-300">
-      <Link href={"/store"} className="flex flex-col items-center">
+      <Link href={"/redeem"} className="flex flex-col items-center">
         <Image
-          src="/images/store.svg"
+          src="/images/rewards.svg"
           width={30}
           height={30}
           alt="toko"
           className="w-auto h-auto"
         />
-        <span className="text-xs">Toko</span>
+        <span className="text-xs">Tukar</span>
       </Link>
-      <Link href={"/rewards"} className="flex flex-col items-center">
+      <Link href={"/voucher"} className="flex flex-col items-center">
         <Image
-          src="/images/rewards.svg"
+          src="/images/voucher.svg"
           width={30}
           height={30}
-          alt="reward"
+          alt="voucher"
           className="w-auto h-auto"
         />
-        <span className="text-xs">Reward</span>
+        <span className="text-xs">Voucher</span>
       </Link>
       <Link href={"/home"} className="flex flex-col items-center">
         <Image

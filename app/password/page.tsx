@@ -28,7 +28,6 @@ interface Pin {
 }
 
 export default function Profile() {
-  const [member, setMember] = useState<string | null>(null);
   const [errorMessagePassword, setErrorMessagePassword] =
     useState<boolean>(false);
   const [successMessagePassword, setSuccessMessagePassword] =
@@ -38,13 +37,23 @@ export default function Profile() {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      setMember(localStorage.getItem("member"));
+      const member = localStorage.getItem("member");
+
+      setPassword((prevPassword) => ({
+        ...prevPassword,
+        memberID: member || "",
+      }));
+
+      setPin((prevPin) => ({
+        ...prevPin,
+        memberID: member || "",
+      }));
     }
   }, []);
 
   // state for password
   const [password, setPassword] = useState<Password>({
-    memberID: member || "",
+    memberID: "",
     currentPassword: "",
     password: "",
     confirmPassword: "",
@@ -57,7 +66,7 @@ export default function Profile() {
 
   // state for pin
   const [pin, setPin] = useState<Pin>({
-    memberID: member || "",
+    memberID: "",
     pin: "",
     confirmPin: "",
     loading: false,
@@ -71,6 +80,10 @@ export default function Profile() {
     // Check if the input is related to password
     setPassword((prevPassword) => {
       const updatedPassword = { ...prevPassword, [name]: value };
+      setPassword((prevPassword) => ({
+        ...prevPassword,
+        error: [],
+      }));
 
       // Check if password and confirmPassword match
       if (name === "password" || name === "confirmPassword") {
@@ -85,6 +98,10 @@ export default function Profile() {
     // Check if the input is related to pin
     setPin((prevPin) => {
       const updatedPin = { ...prevPin, [name]: value };
+      setPin((prevPin) => ({
+        ...prevPin,
+        error: [],
+      }));
 
       // Check if pin and confirmPin match
       if (name === "pin" || name === "confirmPin") {
@@ -94,18 +111,6 @@ export default function Profile() {
       return updatedPin;
     });
   };
-
-  // clear error message after 3 seconds
-  setTimeout(() => {
-    setPassword((prevPassword) => ({
-      ...prevPassword,
-      error: [],
-    }));
-    setPin((prevPin) => ({
-      ...prevPin,
-      error: [],
-    }));
-  }, 3000);
 
   // submit password
   const handleSubmitPassword = async (e: React.FormEvent<HTMLFormElement>) => {
