@@ -8,7 +8,7 @@ import TabBar from "@/components/TabBar";
 import { useAppDispatch } from "@/redux/hooks";
 import { RootState } from "@/redux/store";
 import { getUsers } from "@/redux/thunks/usersThunks";
-import formatToIDR from "@/utils/formatTime";
+import formatToIDR from "@/utils/formatToIDR";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";

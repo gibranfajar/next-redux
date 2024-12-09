@@ -1,78 +1,111 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Button from "@/components/Button";
 import Image from "next/image";
-import { useAppDispatch } from "@/redux/hooks";
+import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
+import { useAppDispatch } from "@/redux/hooks";
 import { RootState } from "@/redux/store";
 import { FadeLoader } from "react-spinners";
-import formatToIDR from "@/utils/formatTime";
-import { getUsers } from "@/redux/thunks/usersThunks";
 import Barcode from "react-barcode";
+import Button from "@/components/Button";
+import Countdown from "@/components/Countdown";
+import formatToIDR from "@/utils/formatToIDR";
+import { getUsers } from "@/redux/thunks/usersThunks";
+import { getVoucher } from "@/redux/thunks/voucherThunks";
+import axios from "axios";
+
+interface Voucher {
+  id: number;
+  voucherCode: string;
+  nominal: number;
+  toDate: string;
+}
+
+interface VoucherRedeem {
+  nominal: number;
+  endDate: string;
+}
+
+interface Redeem {
+  memberID: string;
+  voucher_code: string;
+  ip_address: string;
+}
 
 export default function Redeem() {
+  const router = useRouter();
   const dispatch = useAppDispatch();
-  const { error, user } = useSelector((state: RootState) => state.users);
 
-  const [selectedVoucher, setSelectedVoucher] = useState<number | null>(null);
+  const { user, error } = useSelector((state: RootState) => state.users);
+  const { data } = useSelector((state: RootState) => state.voucher);
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [selectedVoucher, setSelectedVoucher] = useState<string | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [voucherRedeem, setVoucherRedeem] = useState<VoucherRedeem | null>(
+    null
+  );
+
+  const [redeem, setRedeem] = useState<Redeem>({
+    memberID: "",
+    voucher_code: "",
+    ip_address: "",
+  });
 
   useEffect(() => {
-    dispatch(getUsers());
+    if (typeof window !== "undefined") {
+      const member = localStorage.getItem("member");
+
+      setRedeem((prev) => ({
+        ...prev,
+        memberID: member || "",
+        ip_address: "-",
+      }));
+      dispatch(getUsers());
+      dispatch(getVoucher());
+    }
   }, [dispatch]);
 
-  const voucher = [
-    {
-      id: 1,
-      name: "Voucher Belanja 50.000",
-      code: "KMZWAYA",
-      nominal: 50000,
-      daysLeft: 30,
-    },
-    {
-      id: 2,
-      name: "Voucher Belanja 100.000",
-      code: "KMZWAYI",
-      nominal: 100000,
-      daysLeft: 25,
-    },
-    {
-      id: 3,
-      name: "Voucher Belanja 200.000",
-      code: "KMZWAYZ",
-      nominal: 200000,
-      daysLeft: 20,
-    },
-    {
-      id: 4,
-      name: "Voucher Belanja 500.000",
-      code: "KMZWAYK",
-      nominal: 500000,
-      daysLeft: 15,
-    },
-  ];
-
-  const handleSelectVoucher = (id: number) => {
-    setSelectedVoucher(id);
+  const handleSelectVoucher = (voucherCode: string) => {
+    setSelectedVoucher(voucherCode);
+    setRedeem((prev) => ({ ...prev, voucher_code: voucherCode }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (selectedVoucher !== null) {
-      const selectedVoucherData = voucher.find(
-        (item) => item.id === selectedVoucher
+    if (selectedVoucher === null)
+      return alert("Pilih voucher terlebih dahulu.");
+
+    setIsLoading(true);
+
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}voucher/redeem`,
+        {
+          memberID: redeem.memberID,
+          voucher_code: redeem.voucher_code,
+          ip_address: redeem.ip_address,
+        },
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
-      if (selectedVoucherData) {
-        console.log(`Berhasil memilih voucher:`, selectedVoucherData);
+
+      if (response.data.responseCode === "2002500") {
+        setVoucherRedeem(response.data.voucherData);
         setIsModalVisible(true);
       }
-    } else {
-      console.log("Tidak ada voucher yang dipilih");
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  if (user == null) {
+  if (!user || !data) {
     return (
       <div className="flex flex-col gap-4 justify-center items-center h-screen">
         <Image src="/images/logo.svg" width={150} height={150} alt="logo" />
@@ -81,13 +114,7 @@ export default function Redeem() {
     );
   }
 
-  if (error) {
-    return <p>Error: {error}</p>;
-  }
-
-  const selectedVoucherData = voucher.find(
-    (item) => item.id === selectedVoucher
-  );
+  if (error) return <p>Error: {error}</p>;
 
   return (
     <div className="flex justify-center items-center">
@@ -126,22 +153,20 @@ export default function Redeem() {
                 <span className="text-sm">Nominal point yang akan ditukar</span>
               </div>
 
-              <form onSubmit={handleSubmit} className="w-full">
+              <form onSubmit={handleSubmit} className="w-full mt-10">
                 {/* Voucher Options */}
-                <div className="grid grid-cols-3 md:grid-cols-3 gap-4 max-w-md">
-                  {voucher.map((item) => (
+                <div className="grid grid-cols-3 gap-4">
+                  {data.voucherData.map((voucher: Voucher) => (
                     <div
-                      key={item.id}
-                      className={`px-4 py-2 border cursor-pointer flex items-center justify-center ${
-                        selectedVoucher === item.id
-                          ? "border-gray-900 bg-gray-300"
-                          : "border-gray-900"
+                      key={voucher.id}
+                      className={`px-4 py-2 border cursor-pointer text-center ${
+                        selectedVoucher === voucher.voucherCode
+                          ? "bg-gray-300"
+                          : "hover:bg-gray-100"
                       }`}
-                      onClick={() => handleSelectVoucher(item.id)}
+                      onClick={() => handleSelectVoucher(voucher.voucherCode)}
                     >
-                      <span className="text-[10px]">
-                        Rp {formatToIDR(item.nominal)}
-                      </span>
+                      Rp {formatToIDR(voucher.nominal)}
                     </div>
                   ))}
                 </div>
@@ -149,14 +174,15 @@ export default function Redeem() {
                 <Button
                   label="Tukar Point"
                   type="submit"
-                  className="bg-base-accent text-white rounded-full w-full p-2 mt-8"
+                  className="bg-base-accent text-white rounded-full w-full mt-8 p-2"
+                  loading={isLoading}
                 />
               </form>
             </div>
           </div>
 
           {/* Modal */}
-          {isModalVisible && selectedVoucherData && (
+          {isModalVisible && voucherRedeem && (
             <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
               <div className="bg-white w-full max-w-md shadow-lg rounded-lg">
                 <div className="flex justify-end items-center p-4">
@@ -171,7 +197,7 @@ export default function Redeem() {
                 <div className="flex flex-col justify-center items-center w-full">
                   <span className="text-xs text-center px-4">
                     Berhasil menukar poin dengan voucher senilai Rp{" "}
-                    {formatToIDR(selectedVoucherData.nominal)}
+                    {formatToIDR(voucherRedeem.nominal)}
                   </span>
 
                   <div className="w-full p-4">
@@ -179,14 +205,15 @@ export default function Redeem() {
                       <div className="flex justify-between items-start">
                         <div className="flex flex-col">
                           <span className="text-sm font-semibold">
-                            {selectedVoucherData.name}
+                            {/* {voucherRedeem.name} */}
+                            Special Over
                           </span>
                           <div className="">
                             <span className="text-sm text-gray-600">
                               Code :{" "}
                             </span>
                             <span className="text-sm font-semibold">
-                              {selectedVoucherData.code}
+                              AMS123123
                             </span>
                           </div>
                         </div>
@@ -200,16 +227,16 @@ export default function Redeem() {
 
                       <div className="flex justify-end">
                         <h1 className="text-xl font-bold text-gray-800">
-                          Rp {formatToIDR(selectedVoucherData.nominal)}
+                          Rp {formatToIDR(voucherRedeem.nominal)}
                         </h1>
                       </div>
 
                       <div className="flex justify-between items-center">
                         <span className="text-xs text-gray-600">
-                          {selectedVoucherData.daysLeft} days left
+                          <Countdown targetDate={voucherRedeem.endDate} />
                         </span>
                         <Barcode
-                          value={selectedVoucherData.code}
+                          value={"AMS123123"}
                           displayValue={false}
                           height={20}
                           margin={0}
@@ -221,7 +248,11 @@ export default function Redeem() {
 
                     <Button
                       label="OK"
-                      onClick={() => setIsModalVisible(false)}
+                      onClick={() => (
+                        setIsModalVisible(false),
+                        setVoucherRedeem(null),
+                        router.push("/voucher")
+                      )}
                       className="bg-base-accent text-white rounded-full w-full p-2 my-4"
                     />
                   </div>

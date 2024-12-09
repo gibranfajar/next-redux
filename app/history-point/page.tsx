@@ -5,7 +5,7 @@ import { useAppDispatch } from "@/redux/hooks";
 import { RootState } from "@/redux/store";
 import { getPoint } from "@/redux/thunks/pointThunks";
 import formatDate from "@/utils/formatDate";
-import formatToIDR from "@/utils/formatTime";
+import formatToIDR from "@/utils/formatToIDR";
 import Image from "next/image";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
