@@ -10,6 +10,7 @@ import pointReducer from "./slices/pointSlice";
 import historyTierReducer from "./slices/historyTierSlice";
 import voucherReducer from "./slices/voucherSlice";
 import voucherListReducer from "./slices/voucherListSlice";
+import rewardsReducer from "./slices/rewardsSlice";
 
 const store = configureStore({
   reducer: {
@@ -24,6 +25,7 @@ const store = configureStore({
     tierHistory: historyTierReducer,
     voucher: voucherReducer,
     voucherList: voucherListReducer,
+    rewards: rewardsReducer,
   },
   devTools: process.env.NEXT_PUBLIC_NODE_ENV !== "production",
 });

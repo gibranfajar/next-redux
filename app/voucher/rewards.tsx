@@ -1,12 +1,39 @@
 "use client";
 
+import Countdown from "@/components/Countdown";
+import { useAppDispatch } from "@/redux/hooks";
+import { RootState } from "@/redux/store";
+import { getRewards } from "@/redux/thunks/rewardsThunks";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { FadeLoader } from "react-spinners";
+
+interface Rewards {
+  id: number;
+  title: string;
+  voucherCode: string;
+  expiredDate: string;
+  used_at: string;
+  image: string;
+  termsCondition: string;
+  nominal: number;
+  status: string;
+}
 
 export default function Rewards() {
+  const dispatch = useAppDispatch();
+
+  const { error, data } = useSelector((state: RootState) => state.rewards);
+
+  useEffect(() => {
+    dispatch(getRewards());
+  }, [dispatch]);
+
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  const showModal = () => {
+  const showModal = (id: number) => {
+    console.log(id);
     setIsModalVisible(true);
   };
 
@@ -14,45 +41,52 @@ export default function Rewards() {
     setIsModalVisible(false);
   };
 
+  if (data == null) {
+    return (
+      <div className="flex flex-col gap-4 justify-center items-center h-screen">
+        <Image src="/images/logo.svg" width={150} height={150} alt="logo" />
+        <FadeLoader color="#101E2B" width={5} />
+      </div>
+    );
+  }
+
+  if (error) {
+    return <p>Error: {error}</p>;
+  }
+
   return (
     <>
       {/* card */}
-      <div
-        className="bg-white w-full rounded-lg border border-gray-300 flex flex-col items-center justify-between mb-4 cursor-pointer"
-        onClick={showModal}
-      >
-        <Image
-          src={
-            "https://web.amscorp.id:3060/imagestorage/promo/cpWURUAFH0y8Eqos5Tbf2QpromoPROMO%20MSP-01.png"
-          }
-          alt="reward"
-          width={1240}
-          height={1240}
-          className="w-auto h-auto rounded-t-lg"
-        />
-        <div className="flex justify-between items-center w-full p-4 rounded-b-lg">
-          <span className="text-xs">10 hari lagi</span>
-          <span className="text-xs">GUNAKAN</span>
-        </div>
-      </div>
-      <div
-        className="bg-white w-full rounded-lg border border-gray-300 flex flex-col items-center justify-between mb-4 cursor-pointer"
-        onClick={showModal}
-      >
-        <Image
-          src={
-            "https://web.amscorp.id:3060/imagestorage/promo/cpWURUAFH0y8Eqos5Tbf2QpromoPROMO%20MSP-01.png"
-          }
-          alt="reward"
-          width={1240}
-          height={1240}
-          className="w-auto h-auto rounded-t-lg"
-        />
-        <div className="flex justify-between items-center w-full p-4 rounded-b-lg">
-          <span className="text-xs">10 hari lagi</span>
-          <span className="text-xs">GUNAKAN</span>
-        </div>
-      </div>
+
+      {data && data.rewardData ? (
+        data.rewardData.length > 0 ? (
+          data.rewardData.map((item: Rewards) => (
+            <div
+              className="bg-white w-full rounded-lg border border-gray-300 flex flex-col items-center justify-between mb-4 cursor-pointer"
+              onClick={() => showModal(item.id)}
+              key={item.id}
+            >
+              <Image
+                src={`https://web.amscorp.id:3060/imagestorage/gift/${item.image}`}
+                alt="reward"
+                width={1240}
+                height={1240}
+                className="w-auto h-auto rounded-t-lg"
+              />
+              <div className="flex justify-between items-center w-full p-4 rounded-b-lg">
+                <span className="text-xs">
+                  <Countdown targetDate={item.expiredDate} />
+                </span>
+                <span className="text-xs">GUNAKAN</span>
+              </div>
+            </div>
+          ))
+        ) : (
+          <p className="text-center text-gray-500">Tidak ada data rewards.</p>
+        )
+      ) : (
+        <p className="text-center text-gray-500">Data tidak tersedia.</p>
+      )}
 
       {/* open modal */}
       {isModalVisible && (

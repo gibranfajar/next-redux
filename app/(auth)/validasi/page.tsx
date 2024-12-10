@@ -74,7 +74,7 @@ export default function Validasi() {
           <form action="" onSubmit={handleSendPhone}>
             <Input
               label="No Telepon"
-              type="text"
+              type="tel"
               name="userAccount"
               value={data.userAccount}
               onChange={handleChange}

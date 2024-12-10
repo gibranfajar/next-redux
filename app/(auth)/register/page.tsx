@@ -199,7 +199,7 @@ export default function Register() {
             />
             <Input
               label="*No Handphone"
-              type="text"
+              type="tel"
               name="phone"
               value={formData.phone}
               onChange={handleInputChange}

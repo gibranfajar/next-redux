@@ -190,7 +190,7 @@ export default function Profile() {
           <form action="" onSubmit={handleSubmit}>
             <Input
               label="*No Handphone"
-              type="text"
+              type="tel"
               name="phone"
               value={formData.phone}
               onChange={handleChange}

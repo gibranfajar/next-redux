@@ -83,7 +83,7 @@ export default function Login() {
           <p className="text-sm my-6">Masuk menggunakan kredensial anda</p>
           <form onSubmit={handleSubmit}>
             <Input
-              type="text"
+              type="tel"
               label="No Telepon"
               name="user"
               value={data.user}

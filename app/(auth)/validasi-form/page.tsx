@@ -208,7 +208,7 @@ export default function Validasi() {
             />
             <Input
               label="*No Handphone"
-              type="text"
+              type="tel"
               name="phone"
               value={formData.phone}
               onChange={handleChange}

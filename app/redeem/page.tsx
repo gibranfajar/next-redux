@@ -23,6 +23,7 @@ interface Voucher {
 }
 
 interface VoucherRedeem {
+  voucherCode: string;
   nominal: number;
   endDate: string;
 }
@@ -206,14 +207,14 @@ export default function Redeem() {
                         <div className="flex flex-col">
                           <span className="text-sm font-semibold">
                             {/* {voucherRedeem.name} */}
-                            Special Over
+                            Voucher Belanja
                           </span>
                           <div className="">
                             <span className="text-sm text-gray-600">
                               Code :{" "}
                             </span>
                             <span className="text-sm font-semibold">
-                              AMS123123
+                              {voucherRedeem.voucherCode}
                             </span>
                           </div>
                         </div>
