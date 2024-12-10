@@ -15,9 +15,11 @@ type InputProps = {
   name?: string;
   value: string;
   ref?: string;
+  inputMode?: "numeric" | "decimal" | "text";
   placeholder?: string;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   className?: string;
+  pattern?: string;
   error?: string;
 };
 
@@ -27,6 +29,8 @@ export default function Input({
   name,
   value,
   ref,
+  inputMode,
+  pattern,
   placeholder,
   onChange,
   className,
@@ -39,6 +43,8 @@ export default function Input({
         ref={ref}
         type={type}
         name={name}
+        inputMode={inputMode}
+        pattern={pattern}
         placeholder={placeholder}
         value={value}
         onChange={onChange}
