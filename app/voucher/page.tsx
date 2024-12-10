@@ -6,7 +6,7 @@ import Rewards from "./rewards";
 import Vouchers from "./vouchers";
 
 export default function Page() {
-  const [menu, setMenu] = useState<"voucher" | "rewards">("rewards");
+  const [menu, setMenu] = useState<"voucher" | "rewards">("voucher");
 
   const renderMenuContent = () => {
     if (menu === "voucher") return <Vouchers />;

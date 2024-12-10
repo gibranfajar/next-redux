@@ -10,7 +10,7 @@ const Countdown: React.FC<CountdownProps> = ({ targetDate }) => {
 
   const formatDate = (dateString: string): Date | null => {
     // Coba parse dengan beberapa format
-    const formats = ["dd/MM/yyyy", "yyyy-MM-dd", "yyyy/MM/dd"];
+    const formats = ["dd/MM/yyyy", "yyyy-MM-dd"];
     for (const fmt of formats) {
       try {
         return parse(dateString, fmt, new Date());

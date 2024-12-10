@@ -25,6 +25,7 @@ export default function Rewards() {
   const dispatch = useAppDispatch();
 
   const { error, data } = useSelector((state: RootState) => state.rewards);
+  const [detail, setDetail] = useState<Rewards | null>(null);
 
   useEffect(() => {
     dispatch(getRewards());
@@ -33,7 +34,12 @@ export default function Rewards() {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const showModal = (id: number) => {
-    console.log(id);
+    data.rewardData.find((item: Rewards) => {
+      if (item.id === id) {
+        setDetail(item);
+        return true;
+      }
+    });
     setIsModalVisible(true);
   };
 
@@ -100,9 +106,7 @@ export default function Rewards() {
             </div>
 
             <Image
-              src={
-                "https://web.amscorp.id:3060/imagestorage/promo/cpWURUAFH0y8Eqos5Tbf2QpromoPROMO%20MSP-01.png"
-              }
+              src={`https://web.amscorp.id:3060/imagestorage/gift/${detail?.image}`}
               alt="reward"
               width={1240}
               height={1240}
@@ -110,33 +114,34 @@ export default function Rewards() {
             />
 
             <div className="p-4">
-              <h2 className="font-bold text-center my-3">
-                Special Voucher Discount 50K
-              </h2>
+              <h2 className="font-bold text-center my-3">{detail?.title}</h2>
 
               {/* Daftar produk */}
               <div className="my-6">
                 <div className="border border-gray-300 p-4 rounded-lg mb-4">
                   <div className="flex flex-col mb-4">
                     <span className="text-xs text-zinc-400">Voucher Code</span>
-                    <span className="text-sm">KMZWAY87AA</span>
+                    <span className="text-sm">{detail?.voucherCode}</span>
                   </div>
                   <div className="flex flex-col">
                     <span className="text-sm">Voucher can be use at:</span>
-                    <span className="text-xs">Semua brand</span>
+                    <span className="text-xs">{detail?.used_at}</span>
                   </div>
                 </div>
                 <div className="flex flex-col">
                   <span className="text-sm font-semibold">
                     Terms & Condition
                   </span>
-                  <ol className="text-xs my-2">
+                  <span className="text-sm font-semibold">
+                    {detail?.termsCondition}
+                  </span>
+                  {/* <ol className="text-xs my-2">
                     <li>Lorem ipsum dolloret sit amet bla bla..</li>
                     <li>Voucher discount hanya dapat digunakan satu kali</li>
                     <li>Voucher discount hanya dapat digunakan satu kali</li>
                     <li>Voucher discount hanya dapat digunakan satu kali</li>
                     <li>Voucher discount hanya dapat digunakan satu kali</li>
-                  </ol>
+                  </ol> */}
                 </div>
               </div>
             </div>
