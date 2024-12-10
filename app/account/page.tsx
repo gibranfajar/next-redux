@@ -197,11 +197,11 @@ export default function Page() {
 
         {/* Menu Section */}
         <MenuAccount />
-        <div className="pb-24">
-          <span className="cursor-pointer text-sm" onClick={handleLogout}>
+        <button className="pb-24">
+          <span className="text-sm" onClick={handleLogout}>
             SIGN OUT
           </span>
-        </div>
+        </button>
 
         {/* tab bar */}
         <TabBar />

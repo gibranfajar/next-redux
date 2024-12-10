@@ -1,5 +1,5 @@
 import type { NextConfig } from "next";
-require('dotenv').config();
+require("dotenv").config();
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
@@ -9,19 +9,19 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'web.amscorp.id',  // Domain pertama
-        pathname: '/imagestorage/**',
+        protocol: "https",
+        hostname: "web.amscorp.id", // Domain pertama
+        pathname: "/imagestorage/**",
       },
       {
-        protocol: 'https',
-        hostname: 'via.placeholder.com',  // Domain kedua
-        pathname: '/**',
+        protocol: "https",
+        hostname: "via.placeholder.com", // Domain kedua
+        pathname: "/**",
       },
       {
-        protocol: 'https',
-        hostname: 'amscorp.id',  // Domain ketiga
-        pathname: '/card/**',
+        protocol: "https",
+        hostname: "amscorp.id", // Domain ketiga
+        pathname: "/*/*",
       },
     ],
   },

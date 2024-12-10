@@ -10,6 +10,7 @@ import { useSelector } from "react-redux";
 interface Brand {
   id: number;
   brand: string;
+  brandImage: string;
 }
 
 export default function Brand() {
@@ -29,9 +30,9 @@ export default function Brand() {
             key={brand.id}
           >
             <Image
-              src="/images/brands/celcius.svg"
+              src={`https://amscorp.id/brand/${brand.brandImage}`}
               width={250}
-              height={250}
+              height={100}
               alt={brand.brand}
               className="w-auto h-auto"
             />

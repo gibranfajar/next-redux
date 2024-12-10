@@ -182,7 +182,20 @@ export default function Profile() {
           {successMessage && <SuccessMessage message="Data berhasil diubah" />}
           {errorMessage && <ErrorMessage message="Data gagal diubah" />}
 
-          <h1 className="text-lg font-medium">Edit Profil</h1>
+          <div className="flex items-center">
+            <Image
+              src="/images/arrow-left.svg"
+              width={30}
+              height={30}
+              alt="arrow-left"
+              className="w-auto h-auto cursor-pointer"
+              onClick={() => window.history.back()}
+            />
+            <div className="flex-grow flex justify-center">
+              <h1 className="text-lg font-medium">Edit Profil</h1>
+            </div>
+          </div>
+
           <p className="text-xs mt-4 mb-8">
             Pastikan data anda diperbaharui dengan benar
           </p>

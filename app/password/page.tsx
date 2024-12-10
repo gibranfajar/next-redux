@@ -34,6 +34,11 @@ export default function Profile() {
     useState<boolean>(false);
   const [errorMessagePin, setErrorMessagePin] = useState<boolean>(false);
   const [successMessagePin, setSuccessMessagePin] = useState<boolean>(false);
+  const [showPassOld, setShowPassOld] = useState<boolean>(false);
+  const [showPassNew, setShowPassNew] = useState<boolean>(false);
+  const [showPassNewConf, setShowPassNewConf] = useState<boolean>(false);
+  const [showPin, setShowPin] = useState<boolean>(false);
+  const [showPinConf, setShowPinConf] = useState<boolean>(false);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -252,32 +257,166 @@ export default function Profile() {
                 Digunakan untuk masuk akun member AMSCORP
               </p>
               <form onSubmit={handleSubmitPassword}>
-                <Input
-                  label="Password Terkini"
-                  type="password"
-                  name="currentPassword"
-                  value={password.currentPassword}
-                  onChange={handleChange}
-                  className="mb-4"
-                  error={password.error[0]}
-                />
-                <Input
-                  label="Password Baru"
-                  type="password"
-                  name="password"
-                  value={password.password}
-                  onChange={handleChange}
-                  className="mb-4"
-                  error={password.error[1]}
-                />
-                <Input
-                  label="Konfirmasi Password Baru"
-                  type="password"
-                  name="confirmPassword"
-                  value={password.confirmPassword}
-                  onChange={handleChange}
-                  error={password.error[2]}
-                />
+                <div className="mb-2 relative">
+                  <Input
+                    label="Password Terkini"
+                    type={showPassOld ? "text" : "password"}
+                    name="currentPassword"
+                    value={password.currentPassword}
+                    onChange={handleChange}
+                    className="mb-4"
+                    error={password.error[0]}
+                  />
+
+                  <span
+                    className="absolute inset-y-0 top-5 right-0 pr-3 flex items-center text-gray-500 cursor-pointer"
+                    onClick={() => setShowPassOld(!showPassOld)}
+                  >
+                    {showPassOld ? (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="h-6 w-6"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"
+                        />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                        />
+                      </svg>
+                    ) : (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="h-6 w-6"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88"
+                        />
+                      </svg>
+                    )}
+                  </span>
+                </div>
+
+                <div className="mb-2 relative">
+                  <Input
+                    label="Password Baru"
+                    type={showPassNew ? "text" : "password"}
+                    name="password"
+                    value={password.password}
+                    onChange={handleChange}
+                    className="mb-4"
+                    error={password.error[1]}
+                  />
+
+                  <span
+                    className="absolute inset-y-0 top-5 right-0 pr-3 flex items-center text-gray-500 cursor-pointer"
+                    onClick={() => setShowPassNew(!showPassNew)}
+                  >
+                    {showPassNew ? (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="h-6 w-6"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"
+                        />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                        />
+                      </svg>
+                    ) : (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="h-6 w-6"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88"
+                        />
+                      </svg>
+                    )}
+                  </span>
+                </div>
+
+                <div className="mb-2 relative">
+                  <Input
+                    label="Konfirmasi Password Baru"
+                    type={showPassNewConf ? "text" : "password"}
+                    name="confirmPassword"
+                    value={password.confirmPassword}
+                    onChange={handleChange}
+                    error={password.error[2]}
+                  />
+
+                  <span
+                    className="absolute inset-y-0 top-5 right-0 pr-3 flex items-center text-gray-500 cursor-pointer"
+                    onClick={() => setShowPassNewConf(!showPassNewConf)}
+                  >
+                    {showPassNewConf ? (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="h-6 w-6"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"
+                        />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                        />
+                      </svg>
+                    ) : (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="h-6 w-6"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88"
+                        />
+                      </svg>
+                    )}
+                  </span>
+                </div>
 
                 {passwordMatch === false && (
                   <p className="text-red-500 text-xs mt-1">
@@ -308,23 +447,117 @@ export default function Profile() {
                 Digunakan untuk redeem saat transaksi
               </p>
               <form onSubmit={handleSubmitPin}>
-                <Input
-                  label="PIN Baru"
-                  type="password"
-                  name="pin"
-                  value={pin.pin}
-                  onChange={handleChange}
-                  className="mb-4"
-                  error={pin.error[0]}
-                />
-                <Input
-                  label="Konfirmasi PIN Baru"
-                  type="password"
-                  name="confirmPin"
-                  value={pin.confirmPin}
-                  onChange={handleChange}
-                  error={pin.error[1]}
-                />
+                <div className="mb-2 relative">
+                  <Input
+                    label="*PIN"
+                    type={showPin ? "text" : "password"}
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    name="pin"
+                    value={pin.pin}
+                    onChange={handleChange}
+                    className="mb-4"
+                    error={pin.error[0]}
+                  />
+
+                  <span
+                    className="absolute inset-y-0 top-5 right-0 pr-3 flex items-center text-gray-500 cursor-pointer"
+                    onClick={() => setShowPin(!showPin)}
+                  >
+                    {showPin ? (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="h-6 w-6"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"
+                        />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                        />
+                      </svg>
+                    ) : (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="h-6 w-6"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88"
+                        />
+                      </svg>
+                    )}
+                  </span>
+                </div>
+
+                <div className="mb-2 relative">
+                  <Input
+                    label="*Konfirmasi PIN Baru"
+                    type={showPinConf ? "text" : "password"}
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    name="confirmPin"
+                    value={pin.confirmPin}
+                    onChange={handleChange}
+                    className="mb-4"
+                    error={pin.error[0]}
+                  />
+
+                  <span
+                    className="absolute inset-y-0 top-5 right-0 pr-3 flex items-center text-gray-500 cursor-pointer"
+                    onClick={() => setShowPinConf(!showPinConf)}
+                  >
+                    {showPinConf ? (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="h-6 w-6"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"
+                        />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                        />
+                      </svg>
+                    ) : (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="h-6 w-6"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88"
+                        />
+                      </svg>
+                    )}
+                  </span>
+                </div>
 
                 {pinMatch === false && (
                   <p className="text-red-500 text-xs mt-1">PIN tidak cocok.</p>

@@ -48,23 +48,6 @@ const ModalInputPin: FC<ModalInputPinProps> = ({
             Masukkan 6 digit angka PIN anda
           </p>
 
-          {/* <Input
-            type={showPin ? "text" : "password"}
-            inputMode="numeric"
-            pattern="[0-9]*"
-            name="pin"
-            value={pin}
-            onChange={handleInputPinChange}
-            className="mb-4"
-          />
-
-          <span
-            onClick={() => setShowPin(!showPin)}
-            className="text-xs text-gray-600 cursor-pointer"
-          >
-            {showPin ? "Hide" : "Show"}
-          </span> */}
-
           <div className="mb-2 relative">
             <Input
               type={showPin ? "text" : "password"}
