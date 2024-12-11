@@ -158,7 +158,10 @@ export default function Page() {
               />
               <span className="text-xs">Misi</span>
             </div>
-            <div className="flex flex-col justify-center items-center gap-2">
+            <Link
+              href="/lucky-draw"
+              className="flex flex-col justify-center items-center gap-2"
+            >
               <Image
                 src="https://via.placeholder.com/200x200"
                 width={50}
@@ -166,8 +169,8 @@ export default function Page() {
                 alt="Hadiah"
                 className="w-auto h-auto rounded-md"
               />
-              <span className="text-xs">Hadiah</span>
-            </div>
+              <span className="text-xs">Lucky Draw</span>
+            </Link>
             <div className="flex flex-col justify-center items-center gap-2">
               <Image
                 src="https://via.placeholder.com/200x200"

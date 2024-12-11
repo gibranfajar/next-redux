@@ -11,6 +11,8 @@ import historyTierReducer from "./slices/historyTierSlice";
 import voucherReducer from "./slices/voucherSlice";
 import voucherListReducer from "./slices/voucherListSlice";
 import rewardsReducer from "./slices/rewardsSlice";
+import luckyReducer from "./slices/luckySlice";
+import luckyListReducer from "./slices/luckyListSlice";
 
 const store = configureStore({
   reducer: {
@@ -26,6 +28,8 @@ const store = configureStore({
     voucher: voucherReducer,
     voucherList: voucherListReducer,
     rewards: rewardsReducer,
+    lucky: luckyReducer,
+    luckyList: luckyListReducer,
   },
   devTools: process.env.NEXT_PUBLIC_NODE_ENV !== "production",
 });

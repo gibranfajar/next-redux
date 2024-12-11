@@ -14,16 +14,24 @@ import formatToIDR from "@/utils/formatToIDR";
 import { getUsers } from "@/redux/thunks/usersThunks";
 import { getVoucher } from "@/redux/thunks/voucherThunks";
 import axios from "axios";
+import ErrorMessage from "@/components/ErrorMessage";
+import Vouchers from "./Vouchers";
+import Special from "./Special";
 
 interface Voucher {
   id: number;
   voucherCode: string;
+  category: string;
+  voucherTitle: string;
   nominal: number;
+  fromDate: string;
   toDate: string;
+  status_Voucher: string;
 }
 
 interface VoucherRedeem {
   voucherCode: string;
+  category: string;
   nominal: number;
   endDate: string;
 }
@@ -47,6 +55,9 @@ export default function Redeem() {
   const [voucherRedeem, setVoucherRedeem] = useState<VoucherRedeem | null>(
     null
   );
+  const [errorMessageRedeem, setErrorMessageRedeem] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(false);
+  const [menu, setMenu] = useState<"voucher" | "special">("voucher");
 
   const [redeem, setRedeem] = useState<Redeem>({
     memberID: "",
@@ -68,6 +79,42 @@ export default function Redeem() {
     }
   }, [dispatch]);
 
+  const handleMenuChange = (selectedMenu: "voucher" | "special") => {
+    setMenu(selectedMenu);
+  };
+
+  const renderMenuContent = () => {
+    if (menu === "voucher") {
+      const filterData = data.filter(
+        (item: Voucher) => item.category === "VCR"
+      );
+      return (
+        <Vouchers
+          handleSubmit={handleSubmit}
+          handleSelectVoucher={handleSelectVoucher}
+          isLoading={isLoading}
+          selectedVoucher={selectedVoucher}
+          data={filterData}
+        />
+      );
+    }
+    if (menu === "special") {
+      const filterData = data.filter(
+        (item: Voucher) => item.category === "VCRSPCL"
+      );
+      return (
+        <Special
+          handleSubmit={handleSubmit}
+          handleSelectVoucher={handleSelectVoucher}
+          isLoading={isLoading}
+          selectedVoucher={selectedVoucher}
+          data={filterData}
+        />
+      );
+    }
+    return null;
+  };
+
   const handleSelectVoucher = (voucherCode: string) => {
     setSelectedVoucher(voucherCode);
     setRedeem((prev) => ({ ...prev, voucher_code: voucherCode }));
@@ -75,8 +122,13 @@ export default function Redeem() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (selectedVoucher === null)
-      return alert("Pilih voucher terlebih dahulu.");
+    if (selectedVoucher === null) {
+      setErrorMessage(true);
+      setTimeout(() => {
+        setErrorMessage(false);
+      }, 3000);
+      return;
+    }
 
     setIsLoading(true);
 
@@ -98,6 +150,11 @@ export default function Redeem() {
       if (response.data.responseCode === "2002500") {
         setVoucherRedeem(response.data.voucherData);
         setIsModalVisible(true);
+      } else if (response.data.responseCode === "4002500") {
+        setErrorMessageRedeem(true);
+        setTimeout(() => {
+          setErrorMessageRedeem(false);
+        }, 3000);
       }
     } catch (error) {
       console.error(error);
@@ -137,9 +194,34 @@ export default function Redeem() {
               </div>
             </div>
 
+            {/* Menu */}
+            <div className="flex justify-evenly items-center my-8">
+              <span
+                className={`text-xs font-medium cursor-pointer ${
+                  menu === "voucher" ? "underline" : ""
+                }`}
+                onClick={() => handleMenuChange("voucher")}
+              >
+                Voucher Belanja
+              </span>
+              <span
+                className={`text-xs font-medium cursor-pointer ${
+                  menu === "special" ? "underline" : ""
+                }`}
+                onClick={() => handleMenuChange("special")}
+              >
+                Special Offer
+              </span>
+            </div>
+
+            {errorMessage && <ErrorMessage message="Silahkan pilih voucher" />}
+            {errorMessageRedeem && (
+              <ErrorMessage message="Anda sudah tukar voucher" />
+            )}
+
             {/* Content */}
-            <div className="flex flex-col justify-center items-center mt-8">
-              <span className="text-sm mt-10">
+            <div className="flex flex-col justify-center items-center mt-4">
+              <span className="text-sm">
                 Tukarkan point menjadi voucher belanja
               </span>
 
@@ -154,31 +236,7 @@ export default function Redeem() {
                 <span className="text-sm">Nominal point yang akan ditukar</span>
               </div>
 
-              <form onSubmit={handleSubmit} className="w-full mt-10">
-                {/* Voucher Options */}
-                <div className="grid grid-cols-3 gap-4">
-                  {data.voucherData.map((voucher: Voucher) => (
-                    <div
-                      key={voucher.id}
-                      className={`px-4 py-2 border cursor-pointer text-center ${
-                        selectedVoucher === voucher.voucherCode
-                          ? "bg-gray-300"
-                          : "hover:bg-gray-100"
-                      }`}
-                      onClick={() => handleSelectVoucher(voucher.voucherCode)}
-                    >
-                      Rp {formatToIDR(voucher.nominal)}
-                    </div>
-                  ))}
-                </div>
-
-                <Button
-                  label="Tukar Point"
-                  type="submit"
-                  className="bg-base-accent text-white rounded-full w-full mt-8 p-2"
-                  loading={isLoading}
-                />
-              </form>
+              {renderMenuContent()}
             </div>
           </div>
 
@@ -202,15 +260,27 @@ export default function Redeem() {
                   </span>
 
                   <div className="w-full p-4">
-                    <div className="bg-[#E0DDD4] w-full max-w-md rounded-lg border border-gray-300 p-6 flex flex-col justify-between space-y-4 shadow-md mb-3">
+                    <div
+                      className={`${
+                        voucherRedeem.category == "VCR"
+                          ? "bg-[#E0DDD4]"
+                          : "bg-[#1E201E] text-white"
+                      } w-full max-w-md rounded-lg border border-gray-300 p-6 flex flex-col justify-between space-y-4 shadow-md mb-3`}
+                    >
                       <div className="flex justify-between items-start">
                         <div className="flex flex-col">
                           <span className="text-sm font-semibold">
                             {/* {voucherRedeem.name} */}
-                            Voucher Belanja
+                            Voucher
                           </span>
                           <div className="">
-                            <span className="text-sm text-gray-600">
+                            <span
+                              className={`text-sm ${
+                                voucherRedeem.category == "VCR"
+                                  ? "text-[#1E201E]"
+                                  : "text-white"
+                              }`}
+                            >
                               Code :{" "}
                             </span>
                             <span className="text-sm font-semibold">
@@ -218,30 +288,56 @@ export default function Redeem() {
                             </span>
                           </div>
                         </div>
-                        <Image
-                          src="/images/logo.svg"
-                          width={50}
-                          height={50}
-                          alt="logo"
-                        />
+                        {voucherRedeem.category == "VCR" ? (
+                          <Image
+                            src="/images/logo.svg"
+                            width={50}
+                            height={50}
+                            alt="logo"
+                          />
+                        ) : (
+                          <Image
+                            src="/images/logo-white.svg"
+                            width={50}
+                            height={50}
+                            alt="logo"
+                          />
+                        )}
                       </div>
 
                       <div className="flex justify-end">
-                        <h1 className="text-xl font-bold text-gray-800">
+                        <h1
+                          className={`text-xl font-bold ${
+                            voucherRedeem.category == "VCR"
+                              ? "text-[#1E201E]"
+                              : "text-white"
+                          }`}
+                        >
                           Rp {formatToIDR(voucherRedeem.nominal)}
                         </h1>
                       </div>
 
                       <div className="flex justify-between items-center">
-                        <span className="text-xs text-gray-600">
+                        <span
+                          className={`text-xs ${
+                            voucherRedeem.category == "VCR"
+                              ? "text-[#1E201E]"
+                              : "text-white"
+                          } `}
+                        >
                           <Countdown targetDate={voucherRedeem.endDate} />
                         </span>
                         <Barcode
-                          value={"AMS123123"}
+                          value={voucherRedeem.voucherCode}
                           displayValue={false}
                           height={20}
                           margin={0}
                           width={1}
+                          lineColor={`${
+                            voucherRedeem.category == "VCR"
+                              ? "#1E201E"
+                              : "#F8FAFC"
+                          }`}
                           background="transparent"
                         />
                       </div>

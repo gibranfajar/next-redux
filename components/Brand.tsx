@@ -11,6 +11,7 @@ interface Brand {
   id: number;
   brand: string;
   brandImage: string;
+  siteUrl: string;
 }
 
 export default function Brand() {
@@ -26,8 +27,11 @@ export default function Brand() {
       {data &&
         data.brandData.map((brand: Brand) => (
           <div
-            className="p-8 bg-gray-200 rounded-md flex justify-center"
+            className="p-8 bg-gray-200 rounded-md flex justify-center cursor-pointer"
             key={brand.id}
+            onClick={() => {
+              window.open(brand.siteUrl, "_blank");
+            }}
           >
             <Image
               src={`https://amscorp.id/brand/${brand.brandImage}`}

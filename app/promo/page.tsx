@@ -5,6 +5,7 @@ import Header from "@/components/Header";
 import { useAppDispatch } from "@/redux/hooks";
 import { RootState } from "@/redux/store";
 import { getPromo } from "@/redux/thunks/promoThunks";
+import formatDesc from "@/utils/formatDesc";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
@@ -17,7 +18,10 @@ type Promo = {
   imageUrl: string;
   promoTitle: string;
   promoDetail: string;
+  promoLocation: string;
+  promoStartDate: string;
   promoEndDate: string;
+  isActive: boolean;
 };
 
 export default function Promo() {
@@ -106,7 +110,7 @@ export default function Promo() {
             <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-end z-50">
               <div className="bg-white w-full max-w-md min-h-screen shadow-lg">
                 <div className="flex justify-between items-center p-6">
-                  <span className="text-xs">REWARD KAMU</span>
+                  <span className="text-xs">PROMO KAMU</span>
                   <button onClick={closeModal} className="text-black">
                     &#10005;
                   </button>
@@ -127,38 +131,12 @@ export default function Promo() {
 
                   {/* Daftar produk */}
                   <div className="my-6">
-                    <div className="border border-gray-300 p-4 rounded-lg mb-4">
-                      <div className="flex flex-col mb-4">
-                        <span className="text-xs text-zinc-400">
-                          Voucher Code
-                        </span>
-                        <span className="text-sm">KMZWAY87AA</span>
-                      </div>
-                      <div className="flex flex-col">
-                        <span className="text-sm">Voucher can be use at:</span>
-                        <span className="text-xs">Semua brand</span>
-                      </div>
-                    </div>
-                    <div className="flex flex-col">
-                      <span className="text-sm font-semibold">
-                        Terms & Condition
-                      </span>
-                      <ol className="text-xs my-2">
-                        <li>Lorem ipsum dolloret sit amet bla bla..</li>
-                        <li>
-                          Voucher discount hanya dapat digunakan satu kali
-                        </li>
-                        <li>
-                          Voucher discount hanya dapat digunakan satu kali
-                        </li>
-                        <li>
-                          Voucher discount hanya dapat digunakan satu kali
-                        </li>
-                        <li>
-                          Voucher discount hanya dapat digunakan satu kali
-                        </li>
-                      </ol>
-                    </div>
+                    <p
+                      className="text-xs"
+                      dangerouslySetInnerHTML={{
+                        __html: formatDesc(detail?.promoDetail || ""),
+                      }}
+                    />
                   </div>
                 </div>
               </div>
