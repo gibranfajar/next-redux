@@ -40,7 +40,7 @@ const ModalQRVoucher: React.FC<ModalQRVoucherProps> = ({
             <span className="text-sm font-semibold">{data?.noVoucher}</span>
           </div>
           <span className="text-xs mb-6">
-            Perlihatkan ID Member Anda kepada kasir
+            Perlihatkan Code Anda kepada kasir
           </span>
         </div>
       </div>
