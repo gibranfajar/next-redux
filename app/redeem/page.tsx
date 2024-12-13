@@ -55,7 +55,8 @@ export default function Redeem() {
   const [voucherRedeem, setVoucherRedeem] = useState<VoucherRedeem | null>(
     null
   );
-  const [errorMessageRedeem, setErrorMessageRedeem] = useState(false);
+  const [errorMessageRedeemPoint, setErrorMessageRedeemPoint] = useState(false);
+  const [errorMessageRedeemBatas, setErrorMessageRedeemBatas] = useState(false);
   const [errorMessage, setErrorMessage] = useState(false);
   const [menu, setMenu] = useState<"voucher" | "special">("voucher");
 
@@ -150,10 +151,15 @@ export default function Redeem() {
       if (response.data.responseCode === "2002500") {
         setVoucherRedeem(response.data.voucherData);
         setIsModalVisible(true);
-      } else if (response.data.responseCode === "4002500") {
-        setErrorMessageRedeem(true);
+      } else if (response.data.responseCode === "4003500") {
+        setErrorMessageRedeemPoint(true);
         setTimeout(() => {
-          setErrorMessageRedeem(false);
+          setErrorMessageRedeemPoint(false);
+        }, 3000);
+      } else if (response.data.responseCode === "4002500") {
+        setErrorMessageRedeemBatas(true);
+        setTimeout(() => {
+          setErrorMessageRedeemBatas(false);
         }, 3000);
       }
     } catch (error) {
@@ -215,8 +221,11 @@ export default function Redeem() {
             </div>
 
             {errorMessage && <ErrorMessage message="Silahkan pilih voucher" />}
-            {errorMessageRedeem && (
+            {errorMessageRedeemBatas && (
               <ErrorMessage message="Anda sudah tukar voucher" />
+            )}
+            {errorMessageRedeemPoint && (
+              <ErrorMessage message="Point anda tidak mencukupi" />
             )}
 
             {/* Content */}
