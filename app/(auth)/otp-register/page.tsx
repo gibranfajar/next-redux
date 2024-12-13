@@ -95,7 +95,7 @@ export default function Otp() {
         setMessageSuccess(true);
         setTimeout(() => {
           router.push(`/login`);
-        }, 3000);
+        }, 2000);
       } else {
         setErrorMessage(true);
       }
@@ -105,7 +105,7 @@ export default function Otp() {
       setLoading(false);
       setTimeout(() => {
         setErrorMessage(false);
-      }, 3000);
+      }, 2000);
       setOtpValues(["", "", "", "", "", ""]);
     }
   };
@@ -121,7 +121,7 @@ export default function Otp() {
       setMessage(true);
       setTimeout(() => {
         setMessage(false);
-      }, 3000);
+      }, 2000);
     } else {
       console.log("Error OTP:", response.data);
     }

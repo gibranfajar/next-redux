@@ -1,15 +1,17 @@
 import Countdown from "@/components/Countdown";
+import ModalQRVoucher from "@/components/ModalVoucher";
 import { useAppDispatch } from "@/redux/hooks";
 import { RootState } from "@/redux/store";
 import { getVoucherList } from "@/redux/thunks/voucherListThunk";
 import formatToIDR from "@/utils/formatToIDR";
 import Image from "next/image";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Barcode from "react-barcode";
 import { useSelector } from "react-redux";
 import { FadeLoader } from "react-spinners";
 
 interface Voucher {
+  id: number;
   noVoucher: string;
   nominal: number;
   category: string;
@@ -21,10 +23,24 @@ interface Voucher {
 export default function Vouchers() {
   const dispatch = useAppDispatch();
   const { error, data } = useSelector((state: RootState) => state.voucherList);
+  const [voucherData, setVoucherData] = useState<Voucher | null>(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   useEffect(() => {
     dispatch(getVoucherList());
   }, [dispatch]);
+
+  const handleShowVoucher = (noVoucher: string) => {
+    setIsModalVisible(true);
+    const detail = data?.voucherData.find(
+      (item: Voucher) => item.noVoucher === noVoucher
+    );
+    setVoucherData(detail);
+  };
+
+  const closeModal = () => {
+    setIsModalVisible(false);
+  };
 
   if (data == null) {
     return (
@@ -50,8 +66,9 @@ export default function Vouchers() {
               item.category == "VCR"
                 ? "bg-[#E0DDD4]"
                 : "bg-[#131010] text-white"
-            } w-full max-w-md rounded-lg p-6 flex flex-col justify-between space-y-4 shadow-md mb-3`}
-            key={item.noVoucher}
+            } w-full max-w-md rounded-lg p-6 flex flex-col justify-between space-y-4 shadow-md mb-3 cursor-pointer`}
+            key={item.id}
+            onClick={() => handleShowVoucher(item.noVoucher)}
           >
             <div className="flex justify-between items-start">
               <div className="flex flex-col">
@@ -120,6 +137,10 @@ export default function Vouchers() {
         ))
       ) : (
         <p className="text-center text-gray-500">Tidak ada data voucher.</p>
+      )}
+
+      {isModalVisible && (
+        <ModalQRVoucher data={voucherData} closeModal={closeModal} />
       )}
     </>
   );

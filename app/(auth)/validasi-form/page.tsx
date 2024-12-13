@@ -55,6 +55,12 @@ export default function Validasi() {
   const [isLoading, setIsLoading] = useState(false);
   const [showPin, setShowPin] = useState(false);
   const [showPass, setShowPass] = useState(false);
+  const [formMessagePassword, setFormMessagePassword] = useState<{
+    [key: string]: string;
+  }>({});
+  const [formMessagePin, setFormMessagePin] = useState<{
+    [key: string]: string;
+  }>({});
 
   const [formData, setFormData] = useState<MemberInfo>({
     memberID: "",
@@ -124,10 +130,35 @@ export default function Validasi() {
   ) => {
     const target = event.currentTarget as HTMLInputElement | HTMLSelectElement;
     const { name, value } = target;
+
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
     }));
+
+    if (name === "password") {
+      if (value.length < 8) {
+        setFormMessagePassword({
+          password: "Password minimal 8 karakter",
+        });
+      } else {
+        setFormMessagePassword({});
+      }
+    }
+
+    if (name === "pin") {
+      if (value.length < 6) {
+        setFormMessagePin({
+          pin: "PIN minimal 6 karakter",
+        });
+      } else if (value.length > 6) {
+        setFormMessagePin({
+          pin: "PIN maksimal 6 karakter",
+        });
+      } else {
+        setFormMessagePin({});
+      }
+    }
   };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -158,10 +189,10 @@ export default function Validasi() {
 
       if (response.data.responseCode === "2002500") {
         setSuccessMessage(true);
-        setTimeout(() => router.push("/home"), 3000);
+        setTimeout(() => router.push("/home"), 2000);
       } else if (response.data.responseCode === "4002500") {
         setErrorMessage(true);
-        setTimeout(() => setErrorMessage(false), 3000);
+        setTimeout(() => setErrorMessage(false), 2000);
       } else {
         console.error("Terjadi kesalahan pada server");
       }
@@ -281,14 +312,13 @@ export default function Validasi() {
               className="mb-4"
             />
 
-            <div className="mb-2 relative">
+            <div className="relative">
               <Input
                 label="*Password"
                 type={showPass ? "text" : "password"}
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                className="mb-4"
               />
 
               <span
@@ -334,16 +364,22 @@ export default function Validasi() {
               </span>
             </div>
 
-            <div className="mb-2 relative">
+            {formMessagePassword && (
+              <p className="text-red-500 text-xs mb-4 italic">
+                {formMessagePassword.password}
+              </p>
+            )}
+
+            <div className="relative">
               <Input
                 label="*PIN"
                 type={showPin ? "text" : "password"}
                 inputMode="numeric"
                 pattern="[0-9]*"
+                maxLength={6}
                 name="pin"
                 value={formData.pin}
                 onChange={handleChange}
-                className="mb-4"
               />
 
               <span
@@ -388,6 +424,12 @@ export default function Validasi() {
                 )}
               </span>
             </div>
+
+            {formMessagePin && (
+              <p className="text-red-500 text-xs mb-4 italic">
+                {formMessagePin.pin}
+              </p>
+            )}
 
             <Button
               label="SIMPAN"

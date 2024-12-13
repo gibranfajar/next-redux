@@ -1,10 +1,10 @@
 "use client";
 
-import Countdown from "@/components/Countdown";
 import Header from "@/components/Header";
 import { useAppDispatch } from "@/redux/hooks";
 import { RootState } from "@/redux/store";
 import { getPromo } from "@/redux/thunks/promoThunks";
+import formatDate from "@/utils/formatDate";
 import formatDesc from "@/utils/formatDesc";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
@@ -87,7 +87,7 @@ export default function Promo() {
               data.promoData?.map((item: Promo) => (
                 <div
                   key={item.id}
-                  className="bg-white w-full rounded-lg flex flex-col items-center justify-between cursor-pointer mb-4"
+                  className="bg-white w-full rounded-lg flex flex-col justify-between cursor-pointer mb-4"
                   onClick={() => showModal({ id: item.id })}
                 >
                   <Image
@@ -97,9 +97,13 @@ export default function Promo() {
                     height={1240}
                     className="w-auto h-auto rounded-t-lg"
                   />
-                  <div className="flex justify-between items-center w-full p-4 rounded-b-lg">
-                    <Countdown targetDate={item.promoEndDate} />
-                    <span className="text-xs">GUNAKAN</span>
+
+                  <div className="p-4">
+                    <h2 className="font-bold text-sm">{item.promoTitle}</h2>
+                    <p className="text-xs">
+                      {item.promoLocation} | {formatDate(item.promoStartDate)} -{" "}
+                      {formatDate(item.promoEndDate)}
+                    </p>
                   </div>
                 </div>
               ))}

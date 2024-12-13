@@ -32,6 +32,12 @@ export default function Profile() {
     useState<boolean>(false);
   const [successMessagePassword, setSuccessMessagePassword] =
     useState<boolean>(false);
+  const [formMessagePassword, setFormMessagePassword] = useState<{
+    [key: string]: string;
+  }>({});
+  const [formMessagePin, setFormMessagePin] = useState<{
+    [key: string]: string;
+  }>({});
   const [errorMessagePin, setErrorMessagePin] = useState<boolean>(false);
   const [successMessagePin, setSuccessMessagePin] = useState<boolean>(false);
   const [showPassOld, setShowPassOld] = useState<boolean>(false);
@@ -87,8 +93,20 @@ export default function Profile() {
       const updatedPassword = { ...prevPassword, [name]: value };
       setPassword((prevPassword) => ({
         ...prevPassword,
+        [name]: value,
         error: [],
       }));
+
+      // Validasi password hanya jika field yang diubah adalah password
+      if (name === "password") {
+        if (value.length < 8) {
+          setFormMessagePassword({
+            password: "Password minimal 8 karakter",
+          });
+        } else {
+          setFormMessagePassword({});
+        }
+      }
 
       // Check if password and confirmPassword match
       if (name === "password" || name === "confirmPassword") {
@@ -105,8 +123,24 @@ export default function Profile() {
       const updatedPin = { ...prevPin, [name]: value };
       setPin((prevPin) => ({
         ...prevPin,
+        [name]: value,
         error: [],
       }));
+
+      // Validasi password hanya jika field yang diubah adalah password
+      if (name === "pin") {
+        if (value.length < 6) {
+          setFormMessagePin({
+            pin: "PIN minimal 8 karakter",
+          });
+        } else if (value.length > 6) {
+          setFormMessagePin({
+            pin: "PIN maksimal 6 karakter",
+          });
+        } else {
+          setFormMessagePin({});
+        }
+      }
 
       // Check if pin and confirmPin match
       if (name === "pin" || name === "confirmPin") {
@@ -311,14 +345,13 @@ export default function Profile() {
                   </span>
                 </div>
 
-                <div className="mb-2 relative">
+                <div className="relative">
                   <Input
                     label="Password Baru"
                     type={showPassNew ? "text" : "password"}
                     name="password"
                     value={password.password}
                     onChange={handleChange}
-                    className="mb-4"
                     error={password.error[1]}
                   />
 
@@ -364,6 +397,12 @@ export default function Profile() {
                     )}
                   </span>
                 </div>
+
+                {formMessagePassword && (
+                  <p className="text-red-500 text-xs mb-4 italic">
+                    {formMessagePassword.password}
+                  </p>
+                )}
 
                 <div className="mb-2 relative">
                   <Input
@@ -447,16 +486,16 @@ export default function Profile() {
                 Digunakan untuk redeem saat transaksi
               </p>
               <form onSubmit={handleSubmitPin}>
-                <div className="mb-2 relative">
+                <div className="relative">
                   <Input
                     label="*PIN"
                     type={showPin ? "text" : "password"}
                     inputMode="numeric"
                     pattern="[0-9]*"
+                    maxLength={6}
                     name="pin"
                     value={pin.pin}
                     onChange={handleChange}
-                    className="mb-4"
                     error={pin.error[0]}
                   />
 
@@ -503,12 +542,19 @@ export default function Profile() {
                   </span>
                 </div>
 
+                {formMessagePin && (
+                  <p className="text-red-500 text-xs mb-4 italic">
+                    {formMessagePin.pin}
+                  </p>
+                )}
+
                 <div className="mb-2 relative">
                   <Input
                     label="*Konfirmasi PIN Baru"
                     type={showPinConf ? "text" : "password"}
                     inputMode="numeric"
                     pattern="[0-9]*"
+                    maxLength={6}
                     name="confirmPin"
                     value={pin.confirmPin}
                     onChange={handleChange}

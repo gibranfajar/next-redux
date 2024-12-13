@@ -68,8 +68,12 @@ export default function Rewards() {
         data.rewardData.length > 0 ? (
           data.rewardData.map((item: Rewards) => (
             <div
-              className="bg-white w-full rounded-lg border border-gray-300 flex flex-col items-center justify-between mb-4 cursor-pointer"
-              onClick={() => showModal(item.id)}
+              className={`bg-white w-full rounded-lg border border-gray-300 flex flex-col items-center justify-between mb-4 ${
+                item.status === "inactive" ? "opacity-50" : "cursor-pointer"
+              }`}
+              onClick={
+                item.status === "active" ? () => showModal(item.id) : () => {}
+              }
               key={item.id}
             >
               <Image
@@ -83,7 +87,9 @@ export default function Rewards() {
                 <span className="text-xs">
                   <Countdown targetDate={item.expiredDate} />
                 </span>
-                <span className="text-xs">GUNAKAN</span>
+                <span className="text-xs">
+                  {item.status === "active" ? "GUNAKAN" : "TERPAKAI"}
+                </span>
               </div>
             </div>
           ))
@@ -132,16 +138,7 @@ export default function Rewards() {
                   <span className="text-sm font-semibold">
                     Terms & Condition
                   </span>
-                  <span className="text-sm font-semibold">
-                    {detail?.termsCondition}
-                  </span>
-                  {/* <ol className="text-xs my-2">
-                    <li>Lorem ipsum dolloret sit amet bla bla..</li>
-                    <li>Voucher discount hanya dapat digunakan satu kali</li>
-                    <li>Voucher discount hanya dapat digunakan satu kali</li>
-                    <li>Voucher discount hanya dapat digunakan satu kali</li>
-                    <li>Voucher discount hanya dapat digunakan satu kali</li>
-                  </ol> */}
+                  <span className="text-xs">{detail?.termsCondition}</span>
                 </div>
               </div>
             </div>

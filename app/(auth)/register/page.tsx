@@ -33,6 +33,12 @@ export default function Register() {
   const [city, setCity] = useState("");
   const [gender, setGender] = useState("");
   const [formError, setFormError] = useState<{ [key: string]: string }>({});
+  const [formMessagePassword, setFormMessagePassword] = useState<{
+    [key: string]: string;
+  }>({});
+  const [formMessagePin, setFormMessagePin] = useState<{
+    [key: string]: string;
+  }>({});
   const [isError, setIsError] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showPin, setShowPin] = useState(false);
@@ -52,11 +58,39 @@ export default function Register() {
   });
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+
+    // Update form data
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [name]: value,
     });
-    setFormError({});
+
+    // Validasi password hanya jika field yang diubah adalah password
+    if (name === "password") {
+      if (value.length < 8) {
+        setFormMessagePassword({
+          password: "Password minimal 8 karakter",
+        });
+      } else {
+        setFormMessagePassword({});
+      }
+    }
+
+    // Validasi PIN hanya jika field yang diubah adalah PIN
+    if (name === "pin") {
+      if (value.length < 6) {
+        setFormMessagePin({
+          pin: "PIN minimal 6 karakter",
+        });
+      } else if (value.length > 6) {
+        setFormMessagePin({
+          pin: "PIN maksimal 6 karakter",
+        });
+      } else {
+        setFormMessagePin({});
+      }
+    }
   };
 
   const handleSelectChange = (
@@ -257,7 +291,7 @@ export default function Register() {
               className="mb-4"
             />
 
-            <div className="mb-2 relative">
+            <div className="relative">
               <Input
                 label="*Password"
                 type={showPass ? "text" : "password"}
@@ -265,7 +299,6 @@ export default function Register() {
                 value={formData.password}
                 onChange={handleInputChange}
                 error={formError.password}
-                className="mb-4"
               />
 
               <span
@@ -311,16 +344,23 @@ export default function Register() {
               </span>
             </div>
 
-            <div className="mb-2 relative">
+            {formMessagePassword && (
+              <p className="text-red-500 text-xs mb-4 italic">
+                {formMessagePassword.password}
+              </p>
+            )}
+
+            <div className="relative">
               <Input
                 label="*PIN"
                 type={showPin ? "text" : "password"}
                 inputMode="numeric"
                 pattern="[0-9]*"
+                maxLength={6}
                 name="pin"
                 value={formData.pin}
                 onChange={handleInputChange}
-                className="mb-4"
+                error={formError.pin}
               />
 
               <span
@@ -365,6 +405,12 @@ export default function Register() {
                 )}
               </span>
             </div>
+
+            {formMessagePin && (
+              <p className="text-red-500 text-xs mb-4 italic">
+                {formMessagePin.pin}
+              </p>
+            )}
 
             <input type="checkbox" name="allow" className="mb-4" required />
             <label className="text-xs ms-2">

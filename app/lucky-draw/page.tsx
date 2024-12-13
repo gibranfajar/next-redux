@@ -177,7 +177,9 @@ export default function Page() {
               loading={isLoading}
             />
 
-            {errorMessageRedeem && <ErrorMessage message="Gagal tukar kupon" />}
+            {errorMessageRedeem && (
+              <ErrorMessage message="Anda sudah tukar kupon" />
+            )}
             {successMessageRedeem && (
               <SuccessMessage message="Kupon Berhasil Ditukar" />
             )}

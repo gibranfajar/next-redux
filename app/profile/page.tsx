@@ -8,6 +8,7 @@ import SuccessMessage from "@/components/SuccessMessage";
 import { useAppDispatch } from "@/redux/hooks";
 import { RootState } from "@/redux/store";
 import { getUserData } from "@/redux/thunks/userDataThunk";
+import formatDate from "@/utils/formatDate";
 import axios from "axios";
 import Image from "next/image";
 import React, { FormEvent, useEffect, useState } from "react";
@@ -202,7 +203,7 @@ export default function Profile() {
 
           <form action="" onSubmit={handleSubmit}>
             <Input
-              label="*No Handphone"
+              label="No Handphone"
               type="tel"
               name="phone"
               value={formData.phone}
@@ -210,7 +211,7 @@ export default function Profile() {
               className="mb-4"
             />
             <Input
-              label="*Nama Lengkap"
+              label="Nama Lengkap"
               type="text"
               name="fullName"
               value={formData.fullName}
@@ -218,7 +219,7 @@ export default function Profile() {
               className="mb-4"
             />
             <Input
-              label="*Alamat Email"
+              label="Alamat Email"
               type="email"
               name="email"
               value={formData.email}
@@ -226,7 +227,7 @@ export default function Profile() {
               className="mb-4"
             />
             <Select
-              labelSelect="*Provinsi"
+              labelSelect="Provinsi"
               labelOption="Pilih Provinsi"
               options={optionsProv}
               value={prov}
@@ -243,7 +244,7 @@ export default function Profile() {
               className="mb-4"
             />
             <Select
-              labelSelect="*Kota"
+              labelSelect="Kota"
               labelOption="Pilih Kota"
               options={optionsCity}
               value={city}
@@ -259,7 +260,7 @@ export default function Profile() {
             />
 
             <Select
-              labelSelect="*Jenis Kelamin"
+              labelSelect="Jenis Kelamin"
               labelOption="Pilih Jenis Kelamin"
               options={[
                 { id: "PRIA", label: "Laki-laki" },
@@ -274,6 +275,19 @@ export default function Profile() {
               }
               className="mb-4"
             />
+
+            <Input
+              label="Tanggal Lahir"
+              type="text"
+              name="dateofBirth"
+              value={formatDate(formData.dateofBirth)}
+              onChange={handleChange}
+              disabled={true}
+            />
+            <small className="text-xs text-red-400 italic">
+              * Untuk mengubah tanggal lahir, silahkan hubungi admin
+            </small>
+
             <Button
               label="SIMPAN"
               className="bg-base-accent text-white rounded-full w-full p-2 my-6"
